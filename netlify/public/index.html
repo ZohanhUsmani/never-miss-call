@@ -1,0 +1,1569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Never Miss a Call — Your clients call. You answer. Every time.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f8fafc;
+    --surface: #ffffff;
+    --border: #e2e8f0;
+    --text: #0f172a;
+    --muted: #64748b;
+    --accent: #2563eb;
+    --accent-hover: #1d4ed8;
+    --accent-light: #dbeafe;
+    --success: #16a34a;
+    --success-light: #dcfce7;
+    --error: #dc2626;
+    --error-light: #fee2e2;
+    --radius: 10px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,0.08);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .container { max-width: 1040px; margin: 0 auto; padding: 0 20px; }
+
+  /* ── Header ── */
+  header {
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 100;
+  }
+  .header-inner { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; }
+  .logo { font-size: 20px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px; text-decoration: none; }
+  .logo-mark {
+    background: var(--accent); color: #fff; border-radius: 8px;
+    padding: 5px 10px; font-size: 13px; font-weight: 700; letter-spacing: 0.5px;
+  }
+  nav { display: flex; gap: 28px; align-items: center; }
+  nav a { text-decoration: none; color: var(--muted); font-size: 14px; font-weight: 500; transition: color 0.2s; }
+  nav a:hover { color: var(--accent); }
+  .nav-cta {
+    background: var(--accent); color: #fff !important;
+    padding: 8px 18px; border-radius: 8px; font-weight: 600;
+  }
+  .nav-cta:hover { background: var(--accent-hover); color: #fff !important; }
+  .nav-cta-secondary {
+    border: 1px solid var(--border); color: var(--muted) !important;
+    padding: 8px 18px; border-radius: 8px; font-weight: 500; background: var(--surface);
+  }
+  .nav-cta-secondary:hover { border-color: var(--accent); color: var(--accent) !important; }
+
+  /* ── Hero ── */
+  .hero {
+    background: linear-gradient(135deg, #0f2b4a 0%, #1a4a7a 50%, #2563eb 100%);
+    color: #fff; padding: 80px 0 72px;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(circle at 80% 20%, rgba(255,255,255,0.08) 0%, transparent 50%);
+  }
+  .hero-inner { position: relative; max-width: 680px; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2);
+    padding: 6px 14px; border-radius: 100px; font-size: 12px; font-weight: 600;
+    margin-bottom: 20px; letter-spacing: 0.3px;
+  }
+  .hero-badge-dot { width: 6px; height: 6px; background: #4ade80; border-radius: 50%; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+  .hero h1 {
+    font-size: clamp(36px, 5vw, 56px); font-weight: 800;
+    line-height: 1.1; letter-spacing: -1px; margin-bottom: 16px;
+  }
+  .hero h1 span { color: #93c5fd; }
+  .hero p { font-size: 18px; color: #cbd5e1; max-width: 560px; margin-bottom: 36px; }
+  .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 13px 26px; border-radius: 10px; font-size: 15px; font-weight: 600;
+    text-decoration: none; cursor: pointer; border: none;
+    transition: all 0.2s; font-family: inherit;
+    white-space: nowrap;
+  }
+  .btn-primary { background: #fff; color: #0f2b4a; }
+  .btn-primary:hover { background: #e2e8f0; }
+  .btn-secondary { background: transparent; color: #fff; border: 2px solid rgba(255,255,255,0.4); }
+  .btn-secondary:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.6); }
+  .btn-accent { background: var(--accent); color: #fff; }
+  .btn-accent:hover { background: var(--accent-hover); }
+  .btn-outline { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+  .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-success { background: var(--success); color: #fff; }
+  .btn-success:hover { background: #15803d; }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* ── Sections ── */
+  section { padding: 64px 0; }
+  .section-label {
+    color: var(--accent); font-weight: 600; font-size: 12px;
+    text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px;
+  }
+  .section-title { font-size: clamp(24px, 3vw, 32px); font-weight: 700; margin-bottom: 12px; }
+  .section-sub { color: var(--muted); font-size: 15px; max-width: 520px; }
+
+  /* ── Feature grid ── */
+  .features { background: var(--surface); }
+  .features-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px; margin-top: 36px;
+  }
+  .feature-card {
+    padding: 24px; background: var(--bg); border-radius: var(--radius);
+    border: 1px solid var(--border); transition: all 0.2s;
+  }
+  .feature-card:hover { border-color: var(--accent); box-shadow: var(--shadow); }
+  .feature-icon {
+    width: 44px; height: 44px; background: var(--accent-light);
+    border-radius: 10px; display: flex; align-items: center; justify-content: center;
+    font-size: 22px; margin-bottom: 14px;
+  }
+  .feature-card h3 { font-size: 16px; margin-bottom: 6px; }
+  .feature-card p { color: var(--muted); font-size: 14px; }
+
+  /* ── How it works ── */
+  .how-it-works { background: #f1f5f9; }
+  .steps {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 24px; margin-top: 36px;
+  }
+  .step {
+    background: var(--surface); padding: 28px; border-radius: var(--radius);
+    text-align: center; border: 1px solid var(--border);
+  }
+  .step-num {
+    width: 36px; height: 36px; background: var(--accent); color: #fff;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px; margin: 0 auto 14px;
+  }
+  .step h3 { font-size: 15px; margin-bottom: 6px; }
+  .step p { color: var(--muted); font-size: 13px; }
+
+  /* ── Pricing ── */
+  .pricing { background: var(--surface); }
+  .price-card {
+    max-width: 420px; margin: 0 auto; background: var(--bg);
+    border: 1px solid var(--border); border-radius: 16px; padding: 36px;
+    text-align: center;
+  }
+  .price-card h3 { font-size: 20px; margin-bottom: 6px; }
+  .price { font-size: 48px; font-weight: 800; letter-spacing: -2px; margin: 16px 0; }
+  .price span { font-size: 16px; font-weight: 500; color: var(--muted); letter-spacing: 0; }
+  .price-features { list-style: none; margin: 20px 0 28px; text-align: left; }
+  .price-features li {
+    padding: 8px 0; color: var(--text); font-size: 14px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .price-features li::before {
+    content: '✓'; color: var(--success); font-weight: 700; font-size: 14px;
+  }
+
+  /* ── Testimonials ── */
+  .testimonials { background: var(--bg); }
+  .tes-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px; margin-top: 36px;
+  }
+  .tes-card {
+    background: var(--surface); padding: 24px; border-radius: var(--radius);
+    border: 1px solid var(--border);
+  }
+  .tes-stars { color: #f59e0b; font-size: 14px; margin-bottom: 10px; letter-spacing: 2px; }
+  .tes-card blockquote { font-size: 14px; color: var(--text); margin-bottom: 12px; }
+  .tes-author { font-size: 13px; color: var(--muted); }
+
+  /* ── Auth pages ── */
+  .page { min-height: calc(100vh - 70px); display: flex; align-items: center; justify-content: center; padding: 40px 20px; }
+  .page-hero { text-align: center; margin-bottom: 32px; }
+  .page-hero h2 { font-size: 28px; margin-bottom: 8px; }
+  .page-hero p { color: var(--muted); font-size: 15px; }
+  .card {
+    background: var(--surface); padding: 32px; border-radius: 16px;
+    box-shadow: var(--shadow-lg); border: 1px solid var(--border);
+    width: 100%; max-width: 420px;
+  }
+  .card h3 { font-size: 20px; margin-bottom: 4px; }
+  .card .sub { color: var(--muted); font-size: 14px; margin-bottom: 24px; }
+
+  .field { margin-bottom: 16px; }
+  .field label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--text); }
+  .field input, .field select {
+    width: 100%; padding: 10px 12px; border: 1px solid var(--border);
+    border-radius: 8px; font-size: 14px; font-family: inherit;
+    background: var(--surface); color: var(--text); transition: border 0.2s;
+  }
+  .field input:focus, .field select:focus {
+    outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-light);
+  }
+  .field input::placeholder { color: #94a3b8; }
+  .field-error { color: var(--error); font-size: 12px; margin-top: 4px; min-height: 14px; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  .form-error {
+    background: var(--error-light); color: var(--error);
+    padding: 10px 14px; border-radius: 8px; font-size: 13px;
+    margin-bottom: 16px; display: none;
+  }
+  .form-error.show { display: block; }
+
+  .form-footer { margin-top: 20px; text-align: center; font-size: 13px; color: var(--muted); }
+  .form-footer a { color: var(--accent); text-decoration: none; font-weight: 500; cursor: pointer; }
+
+  /* ── Onboarding ── */
+  .step-progress {
+    display: flex; justify-content: center; gap: 8px; margin-bottom: 28px;
+  }
+  .step-pill {
+    padding: 6px 14px; border-radius: 100px; font-size: 12px; font-weight: 600;
+    background: var(--border); color: var(--muted);
+  }
+  .step-pill.active { background: var(--accent); color: #fff; }
+  .step-pill.done { background: var(--success); color: #fff; }
+
+  /* ── Dashboard ── */
+  .dash-layout { display: grid; grid-template-columns: 240px 1fr; gap: 24px; }
+  @media (max-width: 768px) { .dash-layout { grid-template-columns: 1fr; } }
+  .dash-sidebar {
+    background: var(--surface); padding: 24px; border-radius: 12px;
+    border: 1px solid var(--border); height: fit-content; position: sticky; top: 84px;
+  }
+  .dash-sidebar h4 { font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 12px; }
+  .dash-nav item { display: block; }
+  .dash-nav-btn {
+    display: block; width: 100%; text-align: left; padding: 10px 12px;
+    border-radius: 8px; font-size: 14px; cursor: pointer; border: none;
+    background: transparent; color: var(--text); font-family: inherit;
+    transition: all 0.2s; margin-bottom: 4px;
+  }
+  .dash-nav-btn:hover { background: var(--bg); }
+  .dash-nav-btn.active { background: var(--accent-light); color: var(--accent); font-weight: 600; }
+  .dash-user { display: flex; align-items: center; gap: 10px; padding-bottom: 16px; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
+  .dash-avatar {
+    width: 36px; height: 36px; border-radius: 50%; background: var(--accent);
+    color: #fff; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 14px;
+  }
+  .dash-user-name { font-weight: 600; font-size: 14px; }
+  .dash-user-email { font-size: 12px; color: var(--muted); }
+
+  .dash-main { background: var(--surface); padding: 28px; border-radius: 12px; border: 1px solid var(--border); }
+  .dash-main h3 { font-size: 18px; margin-bottom: 4px; }
+  .dash-main .dash-sub { color: var(--muted); font-size: 13px; margin-bottom: 20px; }
+
+  .stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .stat-box {
+    background: var(--bg); padding: 16px; border-radius: 10px; text-align: center;
+    border: 1px solid var(--border);
+  }
+  .stat-num { font-size: 24px; font-weight: 700; color: var(--accent); }
+  .stat-label { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .stat-box.warn .stat-num { color: #f59e0b; }
+
+  .dash-section { margin-bottom: 20px; }
+  .dash-section h4 { font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 8px; }
+  .dash-info-row {
+    display: flex; justify-content: space-between; padding: 10px 0;
+    border-bottom: 1px solid var(--border); font-size: 14px;
+  }
+  .dash-info-row:last-child { border-bottom: none; }
+  .dash-info-label { color: var(--muted); }
+  .dash-info-value { font-weight: 500; }
+  .dash-info-value.null { color: var(--muted); font-style: italic; }
+
+  .dash-empty {
+    background: var(--bg); padding: 20px; border-radius: 10px;
+    border: 1px dashed var(--border); text-align: center; color: var(--muted); font-size: 14px;
+  }
+
+  /* ── Step-by-step instructions ── */
+  .steps-guide { counter-reset: step; }
+  .guide-step {
+    display: flex; gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--border);
+    counter-increment: step;
+  }
+  .guide-step:last-child { border-bottom: none; }
+  .guide-num {
+    flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%;
+    background: var(--accent-light); color: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 14px;
+  }
+  .guide-step::before {
+    content: counter(step);
+    display: flex; align-items: center; justify-content: center;
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--accent-light); color: var(--accent);
+    font-weight: 700; font-size: 14px; flex-shrink: 0;
+  }
+  .guide-title { font-weight: 600; font-size: 15px; margin-bottom: 4px; }
+  .guide-text { color: var(--muted); font-size: 14px; }
+
+  .number-display {
+    background: var(--accent-light); border: 2px solid var(--accent);
+    padding: 20px; border-radius: 12px; text-align: center; margin: 20px 0;
+  }
+  .number-display .label { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+  .number-display .number { font-size: 28px; font-weight: 800; color: var(--accent); letter-spacing: 1px; }
+
+  /* ── Toast ── */
+  .toast-container { position: fixed; top: 80px; right: 20px; z-index: 200; display: flex; flex-direction: column; gap: 8px; }
+  .toast {
+    padding: 12px 16px; border-radius: 8px; font-size: 13px; font-weight: 500;
+    box-shadow: var(--shadow-lg); animation: slideIn 0.3s ease;
+    max-width: 360px;
+  }
+  .toast-success { background: var(--success); color: #fff; }
+  .toast-error { background: var(--error); color: #fff; }
+  .toast-info { background: var(--accent); color: #fff; }
+  @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+  /* ── Misc ── */
+  .hidden { display: none !important; }
+  .text-center { text-align: center; }
+  .mt-8 { margin-top: 8px; }
+  .mt-16 { margin-top: 16px; }
+  .mt-24 { margin-top: 24px; }
+  .mb-16 { margin-bottom: 16px; }
+  .mb-24 { margin-bottom: 24px; }
+  .gap-12 { gap: 12px; }
+  .flex { display: flex; }
+  .flex-col { flex-direction: column; }
+  .flex-1 { flex: 1; }
+  .w-full { width: 100%; }
+  .spinner {
+    width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: #fff; border-radius: 50%; animation: spin 0.6s linear infinite;
+    display: inline-block;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  footer { background: var(--surface); border-top: 1px solid var(--border); padding: 24px 0; text-align: center; color: var(--muted); font-size: 13px; }
+  footer a { color: var(--accent); text-decoration: none; }
+
+  /* ── Responsive ── */
+  @media (max-width: 640px) {
+    .field-row { grid-template-columns: 1fr; }
+    .dash-sidebar { position: static; }
+    .nav a:not(.nav-cta):not(.nav-cta-secondary) { display: none; }
+    .hero { padding: 48px 0 40px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- HEADER (shared) -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<header id="header">
+  <div class="container header-inner">
+    <a class="logo" href="#home">
+      <span class="logo-mark">NMC</span> Never Miss a Call
+    </a>
+    <nav id="mainNav">
+      <a href="#features">Features</a>
+      <a href="#how">How It Works</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#reviews">Reviews</a>
+      <a class="nav-cta" href="#signup">Get Started</a>
+      <a class="nav-cta-secondary hidden" id="navLogin" href="#login">Sign In</a>
+      <a class="nav-cta hidden" id="navDashboard" href="#dashboard">Dashboard</a>
+      <button class="nav-cta-secondary hidden" id="navLogout">Sign Out</button>
+    </nav>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- LANDING PAGE -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<div id="page-home">
+
+<section class="hero" id="home">
+  <div class="container">
+    <div class="hero-inner">
+      <div class="hero-badge"><span class="hero-badge-dot"></span> Now available — USA only</div>
+      <h1>Your clients call.<br><span>You answer.</span> Every time.</h1>
+      <p>Missed calls after hours lose you clients. We give you a smart phone number that rings your business line during hours — and instantly texts you the caller's number when you're closed.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#signup">Start Free — $29/mo</a>
+        <a class="btn btn-secondary" href="#how">See How It Works</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="features" id="features">
+  <div class="container">
+    <div class="section-label">Features</div>
+    <h2 class="section-title">Everything you need to never miss a lead</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🕐</div>
+        <h3>Working Hours Routing</h3>
+        <p>Calls ring your business line during your set hours. Configure any schedule — office hours, business days, weekends.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📱</div>
+        <h3>After-Hours SMS Alerts</h3>
+        <p>When someone calls outside your hours, your phone gets an instant SMS with the caller's number and the time.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🇺🇸</div>
+        <h3>USA Phone Numbers</h3>
+        <p>A dedicated US phone number for your business, provisioned instantly. Pick your area code when you sign up.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📅</div>
+        <h3>Custom Schedules</h3>
+        <p>Monday to Friday? Saturday hours? Set your working days and hours per account. No two businesses are the same.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <h3>Instant Setup</h3>
+        <p>Sign up, pay, tell us your numbers and hours. Your smart number is ready in minutes. No PBX, no IT team.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔒</div>
+        <h3>No Twilio Required</h3>
+        <p>You never see or touch Twilio. We handle all the telecom stuff behind the scenes. You just get a number and use it.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="how-it-works" id="how">
+  <div class="container">
+    <div class="section-label">How It Works</div>
+    <h2 class="section-title">Three steps to never miss a call</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>Sign up & pay</h3>
+        <p>Create your account, pay $29/month, and tell us your business number, personal number, timezone, and working hours.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>Get your smart number</h3>
+        <p>We instantly provision a US phone number for you. This is your new public-facing number — give it to clients, put it on your website.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>Never miss a call</h3>
+        <p>During hours: calls ring your business line. After hours: your phone gets an SMS with the caller. Simple.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="pricing" id="pricing">
+  <div class="container">
+    <div class="section-label">Pricing</div>
+    <h2 class="section-title">Simple, flat pricing. No surprises.</h2>
+    <div class="price-card">
+      <h3>Never Miss a Call</h3>
+      <div class="price">$29<span>/month</span></div>
+      <p style="color:var(--muted);font-size:14px;">Per smart phone number. Cancel anytime.</p>
+      <ul class="price-features">
+        <li>One dedicated US phone number</li>
+        <li>Working hours call routing to your business line</li>
+        <li>After-hours SMS alerts to your personal phone</li>
+        <li>Custom timezone & working schedule</li>
+        <li>Instant setup — no technical skills needed</li>
+        <li>Cancel anytime, no long-term contract</li>
+      </ul>
+      <a id="pricingCta" class="btn btn-accent" href="#signup" style="width:100%;justify-content:center;">Get Started — $29/mo</a>
+    </div>
+  </div>
+</section>
+
+<section class="testimonials" id="reviews">
+  <div class="container">
+    <div class="section-label">What our clients say</div>
+    <h2 class="section-title">Real businesses, real results</h2>
+    <div class="tes-grid">
+      <div class="tes-card">
+        <div class="tes-stars">★★★★★</div>
+        <blockquote>"I was losing 3-4 leads a week to missed after-hours calls. Now I get an SMS every time. Signed up in 5 minutes."</blockquote>
+        <div class="tes-author">— Sarah M., Home Services Company</div>
+      </div>
+      <div class="tes-card">
+        <div class="tes-stars">★★★★★</div>
+        <blockquote>"My office phones during the day, my phone texts me at night. I don't have to choose between being reachable and having a life."</blockquote>
+        <div class="tes-author">— David R., Consulting Firm</div>
+      </div>
+      <div class="tes-card">
+        <div class="tes-stars">★★★★★</div>
+        <blockquote>"The smart number replaced my old business line. Clients don't even know anything changed. I just don't miss calls anymore."</blockquote>
+        <div class="tes-author">— James K., Dental Practice</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>© Never Miss a Call. USA-only service. $29/month per number. Cancel anytime.</p>
+    <p style="margin-top:4px;">Questions? <a href="mailto:hello@nevermisscall.com">hello@nevermisscall.com</a></p>
+  </div>
+</footer>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- AUTH PAGES -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<div class="page hidden" id="page-signup">
+  <div class="container">
+    <div class="page-hero">
+      <h2>Create your account</h2>
+      <p>Starts at $29/month. No credit card required to sign up.</p>
+    </div>
+    <div class="card">
+      <h3>Sign Up</h3>
+      <p class="sub">Create your Never Miss a Call account in seconds.</p>
+      <div class="form-error" id="signupError"></div>
+      <form id="signupForm" onsubmit="return doSignup()">
+        <div class="field">
+          <label for="suName">Full name</label>
+          <input id="suName" type="text" placeholder="John Smith" autocomplete="name">
+          <div class="field-error" id="suNameErr"></div>
+        </div>
+        <div class="field">
+          <label for="suEmail">Email address</label>
+          <input id="suEmail" type="email" placeholder="you@business.com" autocomplete="email">
+          <div class="field-error" id="suEmailErr"></div>
+        </div>
+        <div class="field">
+          <label for="suPassword">Password</label>
+          <input id="suPassword" type="password" placeholder="At least 8 characters" autocomplete="new-password">
+          <div class="field-error" id="suPasswordErr"></div>
+        </div>
+        <button class="btn btn-accent w-full" id="suBtn" type="submit">Create Account</button>
+      </form>
+      <div class="form-footer">
+        Already have an account? <a href="#login" id="suGoLogin">Sign in</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="page hidden" id="page-login">
+  <div class="container">
+    <div class="page-hero">
+      <h2>Sign in</h2>
+      <p>Welcome back to Never Miss a Call.</p>
+    </div>
+    <div class="card">
+      <h3>Sign In</h3>
+      <p class="sub">Enter your email and password to continue.</p>
+      <div class="form-error" id="loginError"></div>
+      <form id="loginForm" onsubmit="return doLogin()">
+        <div class="field">
+          <label for="lgEmail">Email address</label>
+          <input id="lgEmail" type="email" placeholder="you@business.com" autocomplete="email">
+          <div class="field-error" id="lgEmailErr"></div>
+        </div>
+        <div class="field">
+          <label for="lgPassword">Password</label>
+          <input id="lgPassword" type="password" placeholder="Your password" autocomplete="current-password">
+          <div class="field-error" id="lgPasswordErr"></div>
+        </div>
+        <button class="btn btn-accent w-full" id="lgBtn" type="submit">Sign In</button>
+      </form>
+      <div class="form-footer">
+        Don't have an account? <a href="#signup" id="lgGoSignup">Create one</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- SERVICE / SUBSCRIBE PAGE -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<div class="page hidden" id="page-service">
+  <div class="container">
+    <div class="page-hero">
+      <h2>Your Never Miss a Call service</h2>
+      <p>One smart phone number. $29/month. Cancel anytime.</p>
+    </div>
+    <div class="card">
+      <h3>Activate Your Service</h3>
+      <p class="sub">Here's what you get with your Never Miss a Call subscription.</p>
+
+      <div style="background:var(--bg);border-radius:10px;padding:20px;margin-bottom:24px;">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px;">
+          <span style="font-size:14px;color:var(--muted);">Monthly subscription</span>
+          <span style="font-size:28px;font-weight:700;">$29<span>/month</span></span>
+        </div>
+        <div style="font-size:13px;color:var(--muted);"> billed monthly, cancel anytime. No long-term contract.</div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px;">
+        <div style="background:var(--bg);padding:14px;border-radius:8px;border:1px solid var(--border);">
+          <div style="font-size:13px;color:var(--muted);">What you get</div>
+          <div style="font-weight:600;margin-top:4px;">US phone number</div>
+          <div style="font-size:12px;color:var(--muted);">Dedicated number for your business</div>
+        </div>
+        <div style="background:var(--bg);padding:14px;border-radius:8px;border:1px solid var(--border);">
+          <div style="font-size:13px;color:var(--muted);">What you get</div>
+          <div style="font-weight:600;margin-top:4px;">Working hours routing</div>
+          <div style="font-size:12px;color:var(--muted);">Calls ring your business line</div>
+        </div>
+        <div style="background:var(--bg);padding:14px;border-radius:8px;border:1px solid var(--border);">
+          <div style="font-size:13px;color:var(--muted);">What you get</div>
+          <div style="font-weight:600;margin-top:4px;">After-hours SMS</div>
+          <div style="font-size:12px;color:var(--muted);">Instant alerts to your phone</div>
+        </div>
+        <div style="background:var(--bg);padding:14px;border-radius:8px;border:1px solid var(--border);">
+          <div style="font-size:13px;color:var(--muted);">What you get</div>
+          <div style="font-weight:600;margin-top:4px;">Custom schedule</div>
+          <div style="font-size:12px;color:var(--muted);">Your hours, your timezone</div>
+        </div>
+      </div>
+
+      <div class="form-error" id="payError"></div>
+      <form id="payForm" onsubmit="return doPay()">
+        <div class="field">
+          <label for="payEmail">Email (to confirm subscription)</label>
+          <input id="payEmail" type="email" placeholder="you@business.com">
+          <div class="field-error" id="payEmailErr"></div>
+        </div>
+        <div class="field">
+          <label for="payToken">Payment</label>
+          <div style="background:var(--bg);border:1px dashed var(--border);border-radius:8px;padding:14px;font-size:13px;color:var(--muted);">
+            🔒 <strong>Fake Stripe simulation</strong> — enter any payment token to proceed.<br>
+            In production this would be a real Stripe payment element.
+          </div>
+          <input id="payToken" type="text" placeholder="e.g. pm_sim_123456" style="margin-top:8px;font-size:13px;">
+          <div class="field-error" id="payTokenErr"></div>
+        </div>
+        <button class="btn btn-success w-full" id="payBtn" type="submit">Pay $29/month & Activate</button>
+        <p style="font-size:11px;color:var(--muted);margin-top:6px;text-align:center;">This is a simulation — no real payment is processed.</p>
+      </form>
+      <div class="form-footer mt-16">
+        Already paid? <a href="#dashboard" id="payGoDash">Go to your dashboard</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- ONBOARDING FORM -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<div class="page hidden" id="page-onboarding">
+  <div class="container">
+    <div class="step-progress" id="onboardProgress">
+      <span class="step-pill active" data-step="1">1. Your numbers</span>
+      <span class="step-pill" data-step="2">2. Schedule</span>
+      <span class="step-pill" data-step="3">3. Done</span>
+    </div>
+    <div class="card" style="max-width:520px;">
+      <h3 id="onboardTitle">Tell us about your business</h3>
+      <p class="sub" id="onboardSub">We'll set up your smart phone number based on what you tell us.</p>
+      <div class="form-error" id="onboardError"></div>
+
+      <form id="onboardForm" onsubmit="return false;">
+
+        <!-- Step 1: Numbers -->
+        <div id="onboardStep1">
+          <div class="field">
+            <label for="obBusiness">Your business phone number</label>
+            <input id="obBusiness" type="tel" placeholder="+1 555 123 4567" autocomplete="tel">
+            <div class="field-error" id="obBusinessErr"></div>
+            <div style="font-size:12px;color:var(--muted);margin-top:4px;">
+              The number you currently use for your business. Calls will be forwarded here during working hours.
+            </div>
+          </div>
+          <div class="field">
+            <label for="obPersonal">Your personal phone number</label>
+            <input id="obPersonal" type="tel" placeholder="+1 555 987 6543" autocomplete="tel">
+            <div class="field-error" id="obPersonalErr"></div>
+            <div style="font-size:12px;color:var(--muted);margin-top:4px;">
+              Where you want to receive after-hours call alerts (SMS).
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2: Schedule -->
+        <div id="onboardStep2" class="hidden">
+          <div class="field-row">
+            <div class="field">
+              <label for="obTimezone">Timezone</label>
+              <select id="obTimezone">
+                <option value="America/New_York">Eastern Time (ET)</option>
+                <option value="America/Chicago">Central Time (CT)</option>
+                <option value="America/Denver">Mountain Time (MT)</option>
+                <option value="America/Los_Angeles">Pacific Time (PT)</option>
+                <option value="America/Anchorage">Alaska Time (AKT)</option>
+                <option value="Pacific/Honolulu">Hawaii Time (HT)</option>
+              </select>
+              <div class="field-error" id="obTimezoneErr"></div>
+            </div>
+            <div class="field">
+              <label for="obAreaCode">Preferred area code</label>
+              <input id="obAreaCode" type="text" placeholder="212" maxlength="3">
+              <div class="field-error" id="obAreaCodeErr"></div>
+              <div style="font-size:12px;color:var(--muted);margin-top:4px;">
+                Your smart number will use this area code if available.
+              </div>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="obStart">Working hours start</label>
+              <input id="obStart" type="text" placeholder="09:00">
+              <div class="field-error" id="obStartErr"></div>
+            </div>
+            <div class="field">
+              <label for="obEnd">Working hours end</label>
+              <input id="obEnd" type="text" placeholder="17:00">
+              <div class="field-error" id="obEndErr"></div>
+            </div>
+          </div>
+          <div class="field">
+            <label for="obDays">Working days</label>
+            <select id="obDays" multiple size="3" style="height:auto;">
+              <option value="0" selected>Monday</option>
+              <option value="1" selected>Tuesday</option>
+              <option value="2" selected>Wednesday</option>
+              <option value="3" selected>Thursday</option>
+              <option value="4" selected>Friday</option>
+              <option value="5">Saturday</option>
+              <option value="6">Sunday</option>
+            </select>
+            <div class="field-error" id="obDaysErr"></div>
+            <div style="font-size:12px;color:var(--muted);margin-top:4px;">
+              Hold Ctrl/Cmd to select multiple. 0=Monday, 6=Sunday.
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3: Confirmation -->
+        <div id="onboardStep3" class="hidden">
+          <div style="background:var(--bg);padding:16px;border-radius:10px;margin-bottom:16px;">
+            <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">Here's what we'll set up for you:</div>
+            <div id="onboardSummary" style="font-size:14px;"></div>
+          </div>
+          <p style="font-size:14px;color:var(--text);">Once you confirm, we'll instantly provision your smart phone number.</p>
+        </div>
+
+        <div style="display:flex;gap:10px;justify-content:space-between;margin-top:20px;">
+          <button class="btn btn-outline" id="obBackBtn" onclick="onboardBack()">Back</button>
+          <button class="btn btn-accent" id="obNextBtn" type="button" onclick="onboardNext()">Continue</button>
+          <button class="btn btn-success hidden" id="obConfirmBtn" type="button" onclick="onboardConfirm()">Confirm & Get My Number</button>
+        </div>
+      </form>
+
+      <div class="form-footer mt-16">
+        <a href="#dashboard" id="obSkipBtn">Skip — go to dashboard</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- STEP-BY-STEP INSTRUCTIONS (after provisioning) -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<div class="page hidden" id="page-instructions">
+  <div class="container" style="max-width:600px;">
+    <div class="page-hero">
+      <h2>Your smart number is ready</h2>
+      <p>Here's everything you need to know to start using it.</p>
+    </div>
+    <div class="card">
+      <div class="number-display">
+        <div class="label">Your Never Miss a Call number</div>
+        <div class="number" id="instrNumber">+1 (555) 123-4567</div>
+      </div>
+
+      <div class="steps-guide">
+        <div class="guide-step">
+          <div class="guide-title">Start using your new number</div>
+          <div class="guide-text">Give this number to your clients, put it on your website, business cards, and everywhere you used to list your old business number. Your old number still works — but start using this new one for new clients.</div>
+        </div>
+        <div class="guide-step">
+          <div class="guide-title">During working hours — calls ring your business line</div>
+          <div class="guide-text">When someone calls your new number during your working hours, your office phone (your old business number) will ring just like normal. You answer it the same way you always do.</div>
+        </div>
+        <div class="guide-step">
+          <div class="guide-title">After hours — your phone gets an SMS</div>
+          <div class="guide-text">When someone calls outside your working hours, you'll get an instant SMS on your personal phone like: <strong>"📞 Call from +1-555-XXX-XXXX at 2:34 PM outside working hours. Return call?"</strong> Your office phone does NOT ring during these hours.</div>
+        </div>
+        <div class="guide-step">
+          <div class="guide-title">You can always change your settings</div>
+          <div class="guide-text">Go to your dashboard anytime to change your working hours, timezone, or the numbers we forward to. Your smart number stays the same.</div>
+        </div>
+        <div class="guide-step">
+          <div class="guide-title">Your old business number still works</div>
+          <div class="guide-text">Nothing changes on your existing business line. It still rings when people call it directly. But for new clients, give them this new number so you never miss a call.</div>
+        </div>
+      </div>
+
+      <div style="background:var(--accent-light);border-radius:10px;padding:16px;margin-top:20px;">
+        <div style="font-weight:600;font-size:14px;margin-bottom:4px;">Quick summary</div>
+        <div style="font-size:13px;color:var(--text);">
+          Your new number: <strong><span id="instrNumber2">+1 (555) 123-4567</span></strong><br>
+          Forwards to: <strong><span id="instrBusiness">+1 (555) 123-4567</span></strong> during working hours<br>
+          SMS alerts to: <strong><span id="instrPersonal">+1 (555) 987-6543</span></strong> after hours
+        </div>
+      </div>
+
+      <button class="btn btn-accent w-full mt-16" onclick="goDashboard()">Go to My Dashboard</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- DASHBOARD -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<div class="page hidden" id="page-dashboard">
+  <div class="container" style="padding-top:32px;padding-bottom:48px;">
+    <div class="page-hero" style="margin-bottom:24px;">
+      <h2>Your Dashboard</h2>
+      <p id="dashWelcome">Welcome back. Manage your Never Miss a Call service here.</p>
+    </div>
+    <div class="dash-layout">
+      <aside class="dash-sidebar">
+        <div class="dash-user">
+          <div class="dash-avatar" id="dashAvatar">U</div>
+          <div>
+            <div class="dash-user-name" id="dashUserName">User</div>
+            <div class="dash-user-email" id="dashUserEmail">user@email.com</div>
+          </div>
+        </div>
+        <h4>Menu</h4>
+        <button class="dash-nav-btn active" data-view="overview" onclick="switchDashView('overview')">Overview</button>
+        <button class="dash-nav-btn" data-view="config" onclick="switchDashView('config')">Your Settings</button>
+        <button class="dash-nav-btn" data-view="number" onclick="switchDashView('number')">Your Phone Number</button>
+        <button class="dash-nav-btn" data-view="instructions" onclick="switchDashView('instructions')">Setup Guide</button>
+        <div style="margin-top:24px;padding-top:16px;border-top:1px solid var(--border);">
+          <button class="dash-nav-btn" onclick="doLogout()" style="color:var(--error);">Sign Out</button>
+        </div>
+      </aside>
+      <main class="dash-main">
+
+        <!-- Overview -->
+        <div id="dashView-overview">
+          <h3>Service Overview</h3>
+          <p class="dash-sub">Your Never Miss a Call service at a glance.</p>
+          <div class="stat-row">
+            <div class="stat-box">
+              <div class="stat-num" id="dashSubStatus">Active</div>
+              <div class="stat-label">Subscription</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-num" id="dashNumStatus">Ready</div>
+              <div class="stat-label">Smart Number</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-num" id="dashCfgStatus">Done</div>
+              <div class="stat-label">Configuration</div>
+            </div>
+          </div>
+          <div id="dashNoSubAlert" class="dash-empty hidden" style="margin-bottom:20px;">
+            ⚠️ You don't have an active subscription yet. <a href="#service" style="color:var(--accent);">Activate your service ($29/mo)</a>.
+          </div>
+          <div class="dash-section">
+            <h4>Your Smart Number</h4>
+            <div class="dash-info-row">
+              <span class="dash-info-label">Phone number</span>
+              <span class="dash-info-value null" id="dashPhoneNumber">Not provisioned yet</span>
+            </div>
+            <div class="dash-info-row">
+              <span class="dash-info-label">Forwards to (business)</span>
+              <span class="dash-info-value null" id="dashBusinessNum">Not set</span>
+            </div>
+            <div class="dash-info-row">
+              <span class="dash-info-label">SMS alerts to (personal)</span>
+              <span class="dash-info-value null" id="dashPersonalNum">Not set</span>
+            </div>
+          </div>
+          <div class="dash-section">
+            <h4>Call Routing</h4>
+            <div class="dash-info-row">
+              <span class="dash-info-label">Timezone</span>
+              <span class="dash-info-value null" id="dashTimezone">Not set</span>
+            </div>
+            <div class="dash-info-row">
+              <span class="dash-info-label">Working hours</span>
+              <span class="dash-info-value null" id="dashHours">Not set</span>
+            </div>
+            <div class="dash-info-row">
+              <span class="dash-info-label">Working days</span>
+              <span class="dash-info-value null" id="dashDays">Not set</span>
+            </div>
+          </div>
+          <div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="btn btn-accent" onclick="startOnboarding()">Set Up Your Number</button>
+            <button class="btn btn-outline" onclick="switchDashView('instructions')">View Setup Guide</button>
+          </div>
+        </div>
+
+        <!-- Config -->
+        <div id="dashView-config" class="hidden">
+          <h3>Your Settings</h3>
+          <p class="dash-sub">Update your business numbers, schedule, and timezone.</p>
+          <div class="form-error" id="dashConfigError"></div>
+          <div class="dash-section">
+            <h4>Business & Personal Numbers</h4>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+              <div>
+                <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px;">Business number (receives calls during hours)</label>
+                <input id="cfgBusiness" type="tel" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
+              </div>
+              <div>
+                <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px;">Personal number (gets SMS alerts)</label>
+                <input id="cfgPersonal" type="tel" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
+              </div>
+            </div>
+          </div>
+          <div class="dash-section">
+            <h4>Schedule & Timezone</h4>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px;">
+              <div>
+                <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px;">Timezone</label>
+                <select id="cfgTimezone" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
+                  <option value="America/New_York">Eastern (ET)</option>
+                  <option value="America/Chicago">Central (CT)</option>
+                  <option value="America/Denver">Mountain (MT)</option>
+                  <option value="America/Los_Angeles">Pacific (PT)</option>
+                  <option value="America/Anchorage">Alaska (AKT)</option>
+                  <option value="Pacific/Honolulu">Hawaii (HT)</option>
+                </select>
+              </div>
+              <div>
+                <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px;">Start</label>
+                <input id="cfgStart" type="text" placeholder="09:00" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
+              </div>
+              <div>
+                <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px;">End</label>
+                <input id="cfgEnd" type="text" placeholder="17:00" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
+              </div>
+            </div>
+            <div>
+              <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px;">Working days</label>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;" id="cfgDays">
+                <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="0" checked> Mon</label>
+                <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="1" checked> Tue</label>
+                <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="2" checked> Wed</label>
+                <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="3" checked> Thu</label>
+                <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="4" checked> Fri</label>
+                <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="5"> Sat</label>
+                <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="6"> Sun</label>
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-accent" onclick="saveConfigFromDash()">Save Changes</button>
+        </div>
+
+        <!-- Number -->
+        <div id="dashView-number" class="hidden">
+          <h3>Your Phone Number</h3>
+          <p class="dash-sub">Your dedicated Never Miss a Call number.</p>
+          <div class="number-display" style="margin-bottom:20px;">
+            <div class="label">Your smart number</div>
+            <div class="number" id="dashNumDisplay">+1 (555) 123-4567</div>
+          </div>
+          <div class="dash-section">
+            <h4>How it works</h4>
+            <div class="dash-info-row">
+              <span class="dash-info-label">During working hours</span>
+              <span class="dash-info-value">Calls ring your business line: <span id="dashNumBusiness">—</span></span>
+            </div>
+            <div class="dash-info-row">
+              <span class="dash-info-label">After hours</span>
+              <span class="dash-info-value">SMS alert to your personal phone: <span id="dashNumPersonal">—</span></span>
+            </div>
+          </div>
+          <div class="dash-section">
+            <h4>What to do</h4>
+            <div style="background:var(--bg);padding:14px;border-radius:8px;border:1px solid var(--border);font-size:13px;">
+              Give this number to new clients. Put it on your website. Your old business number still works, but start using this one for new business. You'll never miss a call again.
+            </div>
+          </div>
+        </div>
+
+        <!-- Instructions -->
+        <div id="dashView-instructions" class="hidden">
+          <h3>Setup Guide</h3>
+          <p class="dash-sub">Step-by-step instructions for using your Never Miss a Call service.</p>
+          <div class="steps-guide">
+            <div class="guide-step">
+              <div class="guide-title">Start using your new number</div>
+              <div class="guide-text">Give this number to your clients, put it on your website, business cards, and everywhere you used to list your old business number.</div>
+            </div>
+            <div class="guide-step">
+              <div class="guide-title">During working hours — calls ring your business line</div>
+              <div class="guide-text">Your office phone rings when someone calls your new number during your working hours. Answer it the same way you always do.</div>
+            </div>
+            <div class="guide-step">
+              <div class="guide-title">After hours — your phone gets an SMS</div>
+              <div class="guide-text">Instant SMS with the caller's number and time. Your office phone does NOT ring during these hours.</div>
+            </div>
+            <div class="guide-step">
+              <div class="guide-title">You can always change your settings</div>
+              <div class="guide-text">Go to "Your Settings" tab to change your working hours, timezone, or the numbers we forward to.</div>
+            </div>
+            <div class="guide-step">
+              <div class="guide-title">Your old business number still works</div>
+              <div class="guide-text">Nothing changes on your existing business line. For new clients, give them this new number so you never miss a call.</div>
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- TOAST CONTAINER -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<div class="toast-container" id="toasts"></div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- JAVASCRIPT -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<script>
+// ── Config ──
+const API = 'https://your-app.onrender.com';  // ← change to your Render URL
+// const API = 'http://localhost:5000';  // local dev
+
+// ── State ──
+let currentUser = null;
+let currentView = 'overview';
+
+// ── Toast ──
+function toast(msg, type='info') {
+  const el = document.createElement('div');
+  el.className = 'toast toast-' + type;
+  el.textContent = msg;
+  document.getElementById('toasts').appendChild(el);
+  setTimeout(() => el.remove(), 4000);
+}
+
+// ── Page navigation ──
+function showPage(id) {
+  document.querySelectorAll('[id^="page-"]').forEach(p => p.classList.add('hidden'));
+  const el = document.getElementById('page-' + id);
+  if (el) el.classList.remove('hidden');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function goHome() { showPage('home'); }
+function goSignup() { showPage('signup'); }
+function goLogin() { showPage('login'); }
+function goService() { showPage('service'); }
+function goOnboarding() { showPage('onboarding'); }
+function goDashboard() { showPage('dashboard'); loadDashboard(); }
+function goInstructions() { showPage('instructions'); }
+
+// ── Auth helpers ──
+async function apiCall(path, opts={}) {
+  const res = await fetch(API + path, {
+    headers: { 'Content-Type': 'application/json', ...opts.headers },
+    ...opts,
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    const err = data.error || data.message || 'Request failed';
+    throw new Error(err);
+  }
+  return data;
+}
+
+async function doSignup() {
+  const name = document.getElementById('suName').value.trim();
+  const email = document.getElementById('suEmail').value.trim();
+  const password = document.getElementById('suPassword').value;
+  clearErrors('su');
+  if (!name) return setError('suNameErr', 'Name is required');
+  if (!email) return setError('suEmailErr', 'Email is required');
+  if (!password || password.length < 8) return setError('suPasswordErr', 'Password must be at least 8 characters');
+  const btn = document.getElementById('suBtn');
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Creating...';
+  try {
+    const data = await apiCall('/api/auth/signup', {
+      method: 'POST',
+      body: JSON.stringify({ name, email, password }),
+    });
+    currentUser = data.user;
+    sessionStorage.setItem('nmc_user', JSON.stringify(data.user));
+    showNavForLoggedIn();
+    toast('Account created! Redirecting to service...', 'success');
+    setTimeout(() => goService(), 800);
+  } catch (e) {
+    document.getElementById('signupError').textContent = e.message;
+    document.getElementById('signupError').classList.add('show');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Create Account';
+  }
+  return false;
+}
+
+async function doLogin() {
+  const email = document.getElementById('lgEmail').value.trim();
+  const password = document.getElementById('lgPassword').value;
+  clearErrors('lg');
+  if (!email) return setError('lgEmailErr', 'Email is required');
+  if (!password) return setError('lgPasswordErr', 'Password is required');
+  const btn = document.getElementById('lgBtn');
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Signing in...';
+  try {
+    const data = await apiCall('/api/auth/login', {
+      method: 'POST',
+      body: JSON.stringify({ email, password }),
+    });
+    currentUser = data.user;
+    sessionStorage.setItem('nmc_user', JSON.stringify(data.user));
+    showNavForLoggedIn();
+    toast('Signed in! Redirecting to dashboard...', 'success');
+    setTimeout(() => goDashboard(), 800);
+  } catch (e) {
+    document.getElementById('loginError').textContent = e.message;
+    document.getElementById('loginError').classList.add('show');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Sign In';
+  }
+  return false;
+}
+
+function doLogout() {
+  apiCall('/api/auth/logout', { method: 'POST' }).then(() => {
+    currentUser = null;
+    sessionStorage.removeItem('nmc_user');
+    showNavForLoggedOut();
+    goHome();
+    toast('Signed out', 'info');
+  }).catch(() => {
+    currentUser = null;
+    sessionStorage.removeItem('nmc_user');
+    showNavForLoggedOut();
+    goHome();
+  });
+}
+
+// ── Navigation bar state ──
+function showNavForLoggedIn() {
+  document.getElementById('navLogin').classList.add('hidden');
+  document.getElementById('navDashboard').classList.remove('hidden');
+  document.getElementById('navLogout').classList.remove('hidden');
+  document.getElementById('navLogin').classList.remove('hidden');
+}
+function showNavForLoggedOut() {
+  document.getElementById('navLogin').classList.remove('hidden');
+  document.getElementById('navDashboard').classList.add('hidden');
+  document.getElementById('navLogout').classList.add('hidden');
+}
+
+// ── Signup/login page linking ──
+document.getElementById('suGoLogin').addEventListener('click', () => goLogin());
+document.getElementById('lgGoSignup').addEventListener('click', () => goSignup());
+document.getElementById('pricingCta').addEventListener('click', () => {
+  if (currentUser) goService(); else goSignup();
+});
+document.getElementById('payGoDash').addEventListener('click', () => goDashboard());
+document.getElementById('obSkipBtn').addEventListener('click', () => goDashboard());
+
+// ── Payment (fake Stripe) ──
+async function doPay() {
+  const email = document.getElementById('payEmail').value.trim();
+  const token = document.getElementById('payToken').value.trim();
+  clearErrors('pay');
+  if (!email) return setError('payEmailErr', 'Email is required');
+  if (!token) return setError('payTokenErr', 'Enter any payment token to proceed');
+  const btn = document.getElementById('payBtn');
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Processing...';
+  try {
+    const data = await apiCall('/api/subscribe', {
+      method: 'POST',
+      body: JSON.stringify({ payment_method_id: token }),
+    });
+    currentUser = { ...currentUser, subscription_active: true };
+    sessionStorage.setItem('nmc_user', JSON.stringify(currentUser));
+    toast('Payment successful! Your service is active.', 'success');
+    setTimeout(() => goOnboarding(), 600);
+  } catch (e) {
+    document.getElementById('payError').textContent = e.message;
+    document.getElementById('payError').classList.add('show');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Pay $29/month & Activate';
+  }
+  return false;
+}
+
+// ── Onboarding ──
+let onboardStep = 1;
+const TOTAL_ONBOARD_STEPS = 3;
+
+function onboardNext() {
+  if (onboardStep === 1) {
+    if (!validateOnboardStep1()) return;
+    onboardStep = 2;
+  } else if (onboardStep === 2) {
+    if (!validateOnboardStep2()) return;
+    onboardStep = 3;
+    buildOnboardSummary();
+  }
+  updateOnboardProgress();
+  showOnboardStep();
+}
+
+function onboardBack() {
+  if (onboardStep > 1) {
+    onboardStep--;
+    updateOnboardProgress();
+    showOnboardStep();
+  }
+}
+
+function onboardConfirm() {
+  const btn = document.getElementById('obConfirmBtn');
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Provisioning your number...';
+  const biz = document.getElementById('obBusiness').value.trim();
+  const per = document.getElementById('obPersonal').value.trim();
+  const tz = document.getElementById('obTimezone').value;
+  const area = document.getElementById('obAreaCode').value.trim();
+  const start = document.getElementById('obStart').value.trim();
+  const end = document.getElementById('obEnd').value.trim();
+  const daysEl = document.getElementById('obDays');
+  const days = Array.from(daysEl.selectedOptions).map(o => parseInt(o.value));
+  saveConfigAndProvision(biz, per, tz, area, start, end, days).then(() => {
+    btn.disabled = false; btn.textContent = 'Confirm & Get My Number';
+    toast('Your smart number is ready! Check your dashboard.', 'success');
+    goInstructions();
+  }).catch(e => {
+    btn.disabled = false; btn.textContent = 'Confirm & Get My Number';
+    document.getElementById('onboardError').textContent = e.message;
+    document.getElementById('onboardError').classList.add('show');
+  });
+}
+
+function validateOnboardStep1() {
+  clearErrors('ob');
+  const biz = document.getElementById('obBusiness').value.trim();
+  const per = document.getElementById('obPersonal').value.trim();
+  if (!biz) return setError('obBusinessErr', 'Business number is required');
+  if (!/^\+?1[0-9]{10}$/.test(biz.replace(/[\s\-()]/g, '')) && !/^[0-9]{10}$/.test(biz.replace(/[\s\-()]/g, ''))) {
+    return setError('obBusinessErr', 'Enter a valid US phone number (e.g. +1 555 123 4567)');
+  }
+  if (!per) return setError('obPersonalErr', 'Personal number is required');
+  if (!/^\+?1[0-9]{10}$/.test(per.replace(/[\s\-()]/g, '')) && !/^[0-9]{10}$/.test(per.replace(/[\s\-()]/g, ''))) {
+    return setError('obPersonalErr', 'Enter a valid US phone number');
+  }
+  return true;
+}
+
+function validateOnboardStep2() {
+  clearErrors('ob');
+  const tz = document.getElementById('obTimezone').value;
+  const area = document.getElementById('obAreaCode').value.trim();
+  const start = document.getElementById('obStart').value.trim();
+  const end = document.getElementById('obEnd').value.trim();
+  if (!tz) return setError('obTimezoneErr', 'Timezone is required');
+  if (area && !/^[0-9]{3}$/.test(area)) return setError('obAreaCodeErr', 'Enter a 3-digit area code');
+  if (!start.match(/^\d{2}:\d{2}$/)) return setError('obStartErr', 'Use HH:MM format, e.g. 09:00');
+  if (!end.match(/^\d{2}:\d{2}$/)) return setError('obEndErr', 'Use HH:MM format, e.g. 17:00');
+  return true;
+}
+
+function buildOnboardSummary() {
+  const biz = document.getElementById('obBusiness').value.trim();
+  const per = document.getElementById('obPersonal').value.trim();
+  const tz = document.getElementById('obTimezone').options[document.getElementById('obTimezone').selectedIndex].text;
+  const days = Array.from(document.getElementById('obDays').selectedOptions).map(o => o.textContent);
+  const start = document.getElementById('obStart').value || '09:00';
+  const end = document.getElementById('obEnd').value || '17:00';
+  const el = document.getElementById('onboardSummary');
+  el.innerHTML =
+    `<div><strong>Business number:</strong> ${formatPhone(biz)}</div>` +
+    `<div><strong>Personal number:</strong> ${formatPhone(per)}</div>` +
+    `<div><strong>Timezone:</strong> ${tz}</div>` +
+    `<div><strong>Working hours:</strong> ${start} — ${end}</div>` +
+    `<div><strong>Working days:</strong> ${days.join(', ')}</div>`;
+}
+
+function showOnboardStep() {
+  document.getElementById('onboardStep1').classList.toggle('hidden', onboardStep !== 1);
+  document.getElementById('onboardStep2').classList.toggle('hidden', onboardStep !== 2);
+  document.getElementById('onboardStep3').classList.toggle('hidden', onboardStep !== 3);
+  document.getElementById('obNextBtn').classList.toggle('hidden', onboardStep === 3);
+  document.getElementById('obConfirmBtn').classList.toggle('hidden', onboardStep !== 3);
+  document.getElementById('obBackBtn').style.visibility = onboardStep === 1 ? 'hidden' : 'visible';
+  document.getElementById('onboardTitle').textContent = onboardStep === 1 ? 'Tell us about your business' :
+    onboardStep === 2 ? 'Set your schedule' : 'Confirm your setup';
+  document.getElementById('onboardSub').textContent = onboardStep === 1 ? 'We\'ll set up your smart phone number based on what you tell us.' :
+    onboardStep === 2 ? 'Choose your timezone, area code, and working hours.' :
+    'Review your setup and we\'ll provision your number instantly.';
+}
+
+function updateOnboardProgress() {
+  document.querySelectorAll('#onboardProgress .step-pill').forEach(pill => {
+    const s = parseInt(pill.dataset.step);
+    pill.classList.toggle('active', s === onboardStep);
+    pill.classList.toggle('done', s < onboardStep);
+  });
+}
+
+function startOnboarding() {
+  // If config already exists, just go to instructions or dashboard
+  onboardStep = 1;
+  updateOnboardProgress();
+  showOnboardStep();
+  // Prefill from existing config if any
+  loadDashboard().then(() => {
+    if (window._dashConfig) {
+      document.getElementById('obBusiness').value = window._dashConfig.business_number || '';
+      document.getElementById('obPersonal').value = window._dashConfig.personal_number || '';
+      document.getElementById('obTimezone').value = window._dashConfig.timezone || 'America/New_York';
+      document.getElementById('obStart').value = window._dashConfig.working_hours_start || '09:00';
+      document.getElementById('obEnd').value = window._dashConfig.working_hours_end || '18:00';
+      if (window._dashConfig.working_days) {
+        const stored = window._dashConfig.working_days.split(',').map(Number);
+        Array.from(document.getElementById('obDays').options).forEach(opt => {
+          opt.selected = stored.includes(parseInt(opt.value));
+        });
+      }
+    }
+  });
+}
+
+async function saveConfigAndProvision(biz, per, tz, area, start, end, days) {
+  // First save config
+  await apiCall('/api/config', {
+    method: 'POST',
+    body: JSON.stringify({
+      business_number: biz,
+      personal_number: per,
+      timezone: tz,
+      working_days: days,
+      working_hours_start: start,
+      working_hours_end: end,
+    }),
+  });
+  // Then provision Twilio number
+  const data = await apiCall('/api/provision-number', { method: 'POST', body: JSON.stringify({}) });
+  currentUser = { ...currentUser, twilio_number: data.twilio_number };
+  sessionStorage.setItem('nmc_user', JSON.stringify(currentUser));
+  return data;
+}
+
+// ── Dashboard ──
+async function loadDashboard() {
+  try {
+    const data = await apiCall('/api/auth/me');
+    currentUser = data.user;
+    sessionStorage.setItem('nmc_user', JSON.stringify(data.user));
+    window._dashConfig = data.config;
+    renderDashboard(data);
+    showNavForLoggedIn();
+  } catch (e) {
+    // Not logged in
+    currentUser = null;
+    sessionStorage.removeItem('nmc_user');
+    showNavForLoggedOut();
+    toast('Please sign in to view your dashboard.', 'error');
+    goLogin();
+  }
+}
+
+function renderDashboard(data) {
+  document.getElementById('dashUserName').textContent = data.user.name || 'User';
+  document.getElementById('dashUserEmail').textContent = data.user.email;
+  document.getElementById('dashAvatar').textContent = (data.user.name || '?')[0].toUpperCase();
+
+  if (data.user.subscription_active) {
+    document.getElementById('dashSubStatus').textContent = 'Active';
+    document.getElementById('dashSubStatus').style.color = 'var(--success)';
+    document.getElementById('dashNoSubAlert').classList.add('hidden');
+  } else {
+    document.getElementById('dashSubStatus').textContent = 'Not Active';
+    document.getElementById('dashSubStatus').style.color = 'var(--error)';
+    document.getElementById('dashNoSubAlert').classList.remove('hidden');
+  }
+
+  if (data.user.twilio_number) {
+    document.getElementById('dashNumStatus').textContent = 'Ready';
+    document.getElementById('dashNumStatus').style.color = 'var(--success)';
+    document.getElementById('dashPhoneNumber').textContent = formatPhone(data.user.twilio_number);
+    document.getElementById('dashPhoneNumber').classList.remove('null');
+    document.getElementById('dashNumDisplay').textContent = formatPhone(data.user.twilio_number);
+    document.getElementById('instrNumber').textContent = formatPhone(data.user.twilio_number);
+    document.getElementById('instrNumber2').textContent = formatPhone(data.user.twilio_number);
+    document.getElementById('instrBusiness').textContent = data.config ? formatPhone(data.config.business_number) : '—';
+    document.getElementById('instrPersonal').textContent = data.config ? formatPhone(data.config.personal_number) : '—';
+    document.getElementById('dashNumBusiness').textContent = data.config ? formatPhone(data.config.business_number) : '—';
+    document.getElementById('dashNumPersonal').textContent = data.config ? formatPhone(data.config.personal_number) : '—';
+  } else {
+    document.getElementById('dashNumStatus').textContent = 'Not Ready';
+    document.getElementById('dashNumStatus').style.color = 'var(--error)';
+    document.getElementById('dashPhoneNumber').textContent = 'Not provisioned yet';
+    document.getElementById('dashPhoneNumber').classList.add('null');
+    document.getElementById('dashNumDisplay').textContent = '+1 (555) 000-0000';
+    document.getElementById('instrNumber').textContent = '—';
+    document.getElementById('instrNumber2').textContent = '—';
+    document.getElementById('instrBusiness').textContent = '—';
+    document.getElementById('instrPersonal').textContent = '—';
+    document.getElementById('dashNumBusiness').textContent = '—';
+    document.getElementById('dashNumPersonal').textContent = '—';
+  }
+
+  if (data.config) {
+    document.getElementById('cfgStatus').textContent = 'Done';
+    document.getElementById('cfgStatus').style.color = 'var(--success)';
+    document.getElementById('dashCfgStatus').textContent = 'Done';
+    document.getElementById('dashCfgStatus').style.color = 'var(--success)';
+    document.getElementById('dashBusinessNum').textContent = formatPhone(data.config.business_number);
+    document.getElementById('dashBusinessNum').classList.remove('null');
+    document.getElementById('dashPersonalNum').textContent = formatPhone(data.config.personal_number);
+    document.getElementById('dashPersonalNum').classList.remove('null');
+    document.getElementById('dashTimezone').textContent = timezoneLabel(data.config.timezone);
+    document.getElementById('dashTimezone').classList.remove('null');
+    document.getElementById('dashHours').textContent = data.config.working_hours_start + ' — ' + data.config.working_hours_end;
+    document.getElementById('dashHours').classList.remove('null');
+    document.getElementById('dashDays').textContent = daysLabel(data.config.working_days);
+    document.getElementById('dashDays').classList.remove('null');
+  } else {
+    document.getElementById('dashCfgStatus').textContent = 'Not Set';
+    document.getElementById('dashCfgStatus').style.color = 'var(--error)';
+    ['dashBusinessNum','dashPersonalNum','dashTimezone','dashHours','dashDays'].forEach(id => {
+      document.getElementById(id).textContent = 'Not set';
+      document.getElementById(id).classList.add('null');
+    });
+  }
+}
+
+function switchDashView(view) {
+  currentView = view;
+  document.querySelectorAll('#page-dashboard .dash-main > div').forEach(el => el.classList.add('hidden'));
+  const target = document.getElementById('dashView-' + view);
+  if (target) target.classList.remove('hidden');
+  document.querySelectorAll('.dash-nav-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.view === view);
+  });
+}
+
+function saveConfigFromDash() {
+  const biz = document.getElementById('cfgBusiness').value.trim();
+  const per = document.getElementById('cfgPersonal').value.trim();
+  const tz = document.getElementById('cfgTimezone').value;
+  const start = document.getElementById('cfgStart').value.trim();
+  const end = document.getElementById('cfgEnd').value.trim();
+  const days = Array.from(document.querySelectorAll('#cfgDays input:checked')).map(el => el.value);
+  document.getElementById('dashConfigError').classList.remove('show');
+  apiCall('/api/config', {
+    method: 'POST',
+    body: JSON.stringify({ business_number: biz, personal_number: per, timezone: tz, working_days: days, working_hours_start: start, working_hours_end: end }),
+  }).then(() => {
+    toast('Settings saved!', 'success');
+    loadDashboard();
+  }).catch(e => {
+    document.getElementById('dashConfigError').textContent = e.message;
+    document.getElementById('dashConfigError').classList.add('show');
+  });
+}
+
+// ── Helpers ──
+function formatPhone(p) {
+  if (!p) return '—';
+  const cleaned = p.replace(/[^\d+]/g, '');
+  if (!cleaned.startsWith('+')) cleaned.replace(/^1/, '+1');
+  const match = cleaned.match(/^\+1(\d{3})(\d{3})(\d{4})$/);
+  if (!match) return p;
+  return '+1 (' + match[1] + ') ' + match[2] + '-' + match[3];
+}
+function timezoneLabel(tz) {
+  const map = {
+    'America/New_York': 'Eastern (ET)',
+    'America/Chicago': 'Central (CT)',
+    'America/Denver': 'Mountain (MT)',
+    'America/Los_Angeles': 'Pacific (PT)',
+    'America/Anchorage': 'Alaska (AKT)',
+    'Pacific/Honolulu': 'Hawaii (HT)',
+  };
+  return map[tz] || tz;
+}
+function daysLabel(csv) {
+  if (!csv) return '—';
+  const names = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  return csv.split(',').map(d => names[parseInt(d)]).filter(Boolean).join(', ');
+}
+
+function setError(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.style.display = 'block';
+  return false;
+}
+function clearErrors(prefix) {
+  document.querySelectorAll('[id^="' + prefix + '"]').forEach(el => {
+    if (el.id.endsWith('Err')) el.textContent = '';
+  });
+  const errBox = document.getElementById(prefix + 'Error') || document.getElementById(prefix + 'Error');
+  if (errBox) errBox.classList.remove('show');
+}
+
+// ── Router: hash-based ──
+window.addEventListener('hashchange', route);
+function route() {
+  const hash = window.location.hash.replace('#', '');
+  if (hash === '' || hash === 'home') goHome();
+  else if (hash === 'features') { goHome(); setTimeout(() => document.getElementById('features').scrollIntoView(), 100); }
+  else if (hash === 'how') { goHome(); setTimeout(() => document.getElementById('how').scrollIntoView(), 100); }
+  else if (hash === 'pricing') { goHome(); setTimeout(() => document.getElementById('pricing').scrollIntoView(), 100); }
+  else if (hash === 'reviews') { goHome(); setTimeout(() => document.getElementById('reviews').scrollIntoView(), 100); }
+  else if (hash === 'signup') {
+    if (currentUser) goService(); else goSignup();
+  }
+  else if (hash === 'login') {
+    if (currentUser) goDashboard(); else goLogin();
+  }
+  else if (hash === 'service') {
+    if (!currentUser) goSignup();
+    else if (!currentUser || !currentUser.subscription_active) goService();
+    else goDashboard();
+  }
+  else if (hash === 'dashboard') {
+    if (!currentUser) goLogin();
+    else goDashboard();
+  }
+  else if (hash === 'onboarding') {
+    if (!currentUser) goLogin();
+    else if (!currentUser || !currentUser.subscription_active) goService();
+    else goOnboarding();
+  }
+  else if (hash === 'instructions') {
+    if (!currentUser) goLogin();
+    else goInstructions();
+  }
+  else goHome();
+}
+
+// ── Init ──
+(function init() {
+  const saved = sessionStorage.getItem('nmc_user');
+  if (saved) {
+    try {
+      currentUser = JSON.parse(saved);
+    } catch(e) { currentUser = null; }
+  }
+  showNavForLoggedIn();
+  route();
+  window.addEventListener('load', () => setTimeout(loadDashboard, 500));
+})();
+</script>
+
+</body>
+</html>

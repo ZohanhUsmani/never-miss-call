@@ -1,0 +1,29 @@
+# Python
+venv/
+ENV/
+env/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+*.egg
+
+# SQLite
+*.db
+instance/
+
+# Environment / secrets
+.env
+.env.local
+*.env
+
+# Build / IDE
+*.log
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Render/Netlify deploy artifacts
+render-backend/instance/
