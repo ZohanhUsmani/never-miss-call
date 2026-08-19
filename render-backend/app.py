@@ -41,6 +41,8 @@ class User(db.Model):
     subscription_start = db.Column(db.DateTime, nullable=True)
     twilio_number = db.Column(db.String(20), nullable=True)
     twilio_number_sid = db.Column(db.String(34), nullable=True)
+    price = db.Column(db.Float, default=29.0)
+    notes = db.Column(db.Text, nullable=True)
 
 
 class ClientConfig(db.Model):
@@ -492,11 +494,9 @@ def admin_create_client():
         working_days=working_days,
         working_hours_start=working_hours_start,
         working_hours_end=working_hours_end,
+        after_hours_sms_enabled=after_hours_sms_enabled,
+        after_hours_forward_enabled=after_hours_forward_enabled,
     )
-    if hasattr(cfg, 'after_hours_sms_enabled'):
-        cfg.after_hours_sms_enabled = after_hours_sms_enabled
-    if hasattr(cfg, 'after_hours_forward_enabled'):
-        cfg.after_hours_forward_enabled = after_hours_forward_enabled
     db.session.add(cfg)
 
     # Auto-buy number if SignalWire is configured
@@ -537,6 +537,8 @@ def admin_create_client():
         'working_days': working_days,
         'working_hours_start': working_hours_start,
         'working_hours_end': working_hours_end,
+        'after_hours_sms_enabled': after_hours_sms_enabled,
+        'after_hours_forward_enabled': after_hours_forward_enabled,
         'voice_url': voice_url,
         'area_code': data.get('area_code', '') or None,
     }
@@ -615,6 +617,8 @@ def admin_update_client(client_id):
         'working_days': cfg.working_days,
         'working_hours_start': cfg.working_hours_start,
         'working_hours_end': cfg.working_hours_end,
+        'after_hours_sms_enabled': cfg.after_hours_sms_enabled,
+        'after_hours_forward_enabled': cfg.after_hours_forward_enabled,
     }
     return jsonify({'ok': True, 'client': result})
 
