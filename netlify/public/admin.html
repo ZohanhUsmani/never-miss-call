@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Never Miss a Call</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f172a;
+    --surface: #1e293b;
+    --surface2: #334155;
+    --border: #475569;
+    --text: #f1f5f9;
+    --muted: #94a3b8;
+    --accent: #3b82f6;
+    --accent-hover: #2563eb;
+    --success: #22c55e;
+    --error: #ef4444;
+    --warning: #f59e0b;
+    --radius: 8px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+  .header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header h1 {
+    font-size: 18px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .header .logout {
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 13px;
+    text-decoration: underline;
+  }
+  .header .logout:hover { color: var(--text); }
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 24px;
+  }
+  .btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.15s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: white;
+  }
+  .btn-primary:hover { background: var(--accent-hover); }
+  .btn-success {
+    background: var(--success);
+    color: white;
+  }
+  .btn-success:hover { opacity: 0.9; }
+  .btn-error {
+    background: var(--error);
+    color: white;
+  }
+  .btn-error:hover { opacity: 0.9; }
+  .btn-outline {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .btn-outline:hover { background: var(--surface2); }
+  .btn-sm {
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+  .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .card h2 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .form-row.single { grid-template-columns: 1fr; }
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .form-group label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .form-group input, .form-group select, .form-group textarea {
+    padding: 8px 10px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    font-size: 13px;
+    font-family: 'Inter', sans-serif;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .form-group input:focus, .form-group select:focus {
+    border-color: var(--accent);
+  }
+  .form-group textarea {
+    resize: vertical;
+    min-height: 60px;
+  }
+  .form-group select {
+    cursor: pointer;
+  }
+  .form-group input:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .alert {
+    padding: 10px 14px;
+    border-radius: var(--radius);
+    font-size: 13px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .alert-error {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: var(--error);
+  }
+  .alert-success {
+    background: rgba(34, 197, 94, 0.15);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    color: var(--success);
+  }
+  .alert-warning {
+    background: rgba(245, 158, 11, 0.15);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    color: var(--warning);
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  th {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--muted);
+    font-weight: 500;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    vertical-align: top;
+  }
+  td.number {
+    font-family: 'Inter', monospace;
+    font-size: 12px;
+    word-break: break-all;
+  }
+  td.status {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+  }
+  .status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+  }
+  .status-active .status-dot { background: var(--success); }
+  .status-pending .status-dot { background: var(--warning); }
+  .status-inactive .status-dot { background: var(--muted); }
+  .action-cell { white-space: nowrap; }
+  .spinner {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--muted);
+    font-size: 14px;
+  }
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px;
+    width: 100%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  }
+  .modal h2 {
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+  .modal-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    margin-top: 16px;
+  }
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 36px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+  .switch input { opacity: 0; width: 0; height: 0; }
+  .switch .slider {
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    background: var(--surface2);
+    border-radius: 20px;
+    transition: 0.2s;
+  }
+  .switch .slider:before {
+    content: "";
+    position: absolute;
+    height: 14px;
+    width: 14px;
+    left: 3px;
+    bottom: 3px;
+    background: var(--text);
+    border-radius: 50%;
+    transition: 0.2s;
+  }
+  .switch input:checked + .slider { background: var(--accent); }
+  .switch input:checked + .slider:before { transform: translateX(16px); }
+  .copy-btn {
+    cursor: pointer;
+    color: var(--muted);
+    font-size: 11px;
+    text-decoration: underline;
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+  }
+  .copy-btn:hover { color: var(--text); }
+  .number-badge {
+    background: var(--surface2);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 12px;
+    color: var(--accent);
+  }
+  .tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .tab {
+    padding: 8px 16px;
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 13px;
+    font-family: 'Inter', sans-serif;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+  }
+  .tab.active {
+    color: var(--text);
+    border-bottom-color: var(--accent);
+  }
+  .tab:hover { color: var(--text); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>⚙️ Admin Panel — Never Miss a Call</h1>
+  <span class="logout" onclick="logout()">Logout</span>
+</div>
+
+<div class="container" id="app">
+  <!-- Login screen -->
+  <div id="loginScreen" class="card" style="max-width:400px;margin:40px auto;">
+    <h2 style="margin-bottom:16px;">Admin Login</h2>
+    <div class="form-group">
+      <label>Admin Token</label>
+      <input type="password" id="adminToken" placeholder="Enter your admin token" style="padding:10px;">
+    </div>
+    <div style="margin-top:12px;display:flex;gap:8px;">
+      <button class="btn btn-primary" onclick="adminLogin()" style="flex:1;">Login</button>
+    </div>
+    <div id="loginError" style="margin-top:12px;color:var(--error);font-size:13px;display:none;"></div>
+    <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);">
+      Token is set via <code>ADMIN_TOKEN</code> env var on Render.
+    </div>
+  </div>
+
+  <!-- Main app (hidden until login) -->
+  <div id="mainApp" style="display:none;">
+
+    <!-- Alerts -->
+    <div id="alertContainer"></div>
+
+    <!-- Toolbar -->
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-primary" onclick="openAddModal()">＋ Add Client</button>
+        <button class="btn btn-outline btn-sm" onclick="refreshClients()">↻ Refresh</button>
+        <button class="btn btn-outline btn-sm" onclick="exportCSV()">⬇ Export CSV</button>
+      </div>
+      <div style="font-size:12px;color:var(--muted);">
+        Total clients: <strong id="totalCount">0</strong>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab active" data-tab="active" onclick="switchTab('active')">Active</button>
+      <button class="tab" data-tab="all" onclick="switchTab('all')">All</button>
+      <button class="tab" data-tab="pending" onclick="switchTab('pending')">Pending (no number)</button>
+    </div>
+
+    <!-- Client table -->
+    <div class="card">
+      <div id="clientTable">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>SignalWire Number</th>
+              <th>Business #</th>
+              <th>Personal #</th>
+              <th>Schedule</th>
+              <th>Status</th>
+              <th>Added</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="clientRows"></tbody>
+        </table>
+      </div>
+      <div id="emptyState" class="empty-state" style="display:none;">
+        No clients yet. Click "＋ Add Client" to add your first client.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add/Edit Modal -->
+<div class="modal-overlay" id="clientModal">
+  <div class="modal">
+    <h2 id="modalTitle">Add Client</h2>
+    <form id="clientForm" onsubmit="return false;">
+      <input type="hidden" id="editId">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="fName" required placeholder="e.g. Ahmed Khan">
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="fEmail" required placeholder="ahmed@company.com">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Password (min 8 chars)</label>
+          <input type="password" id="fPassword" required minlength="8" placeholder="Client password">
+        </div>
+        <div class="form-group">
+          <label>Service Price ($/month)</label>
+          <input type="number" id="fPrice" value="29" min="0" step="0.01">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Business Phone Number</label>
+          <input type="text" id="fBiz" placeholder="+923001234567">
+        </div>
+        <div class="form-group">
+          <label>Personal Phone Number</label>
+          <input type="text" id="fPer" placeholder="+923007654321">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Timezone</label>
+          <select id="fTz">
+            <option value="Asia/Karachi">🇵🇰 Asia/Karachi (Pakistan)</option>
+            <option value="America/New_York">🇺🇸 America/New_York (US ET)</option>
+            <option value="America/Chicago">🇺🇸 America/Chicago (US CT)</option>
+            <option value="America/Denver">🇺🇸 America/Denver (US MT)</option>
+            <option value="America/Los_Angeles">🇺🇸 America/Los_Angeles (US PT)</option>
+            <option value="America/Anchorage">🇺🇸 America/Anchorage</option>
+            <option value="Pacific/Honolulu">🇺🇸 Pacific/Honolulu</option>
+            <option value="Europe/London">🇬🇧 Europe/London</option>
+            <option value="Europe/Paris">🇫🇷 Europe/Paris</option>
+            <option value="Europe/Berlin">🇩🇪 Europe/Berlin</option>
+            <option value="Europe/Madrid">🇪🇸 Europe/Madrid</option>
+            <option value="Europe/Istanbul">🇹🇷 Europe/Istanbul</option>
+            <option value="Asia/Dubai">🇦🇪 Asia/Dubai</option>
+            <option value="Asia/Kolkata">🇮🇳 Asia/Kolkata (India)</option>
+            <option value="Asia/Bangkok">🇹🇭 Asia/Bangkok</option>
+            <option value="Asia/Shanghai">🇨🇳 Asia/Shanghai</option>
+            <option value="Asia/Tokyo">🇯🇵 Asia/Tokyo</option>
+            <option value="Australia/Sydney">🇦🇺 Australia/Sydney</option>
+            <option value="Pacific/Auckland">🇳🇿 Pacific/Auckland</option>
+            <option value="UTC">🌐 UTC</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Area Code (for new number)</label>
+          <input type="text" id="fAreaCode" placeholder="e.g. 212" style="width:100px;">
+          <div style="font-size:11px;color:var(--muted);">Leave blank for any available number.</div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Working Days</label>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            <label class="switch"><input type="checkbox" id="fMon" checked><span class="slider"></span><span style="margin-left:6px;font-size:12px;color:var(--muted);">Mon</span></label>
+            <label class="switch"><input type="checkbox" id="fTue" checked><span class="slider"></span><span style="margin-left:6px;font-size:12px;color:var(--muted);">Tue</span></label>
+            <label class="switch"><input type="checkbox" id="fWed" checked><span class="slider"></span><span style="margin-left:6px;font-size:12px;color:var(--muted);">Wed</span></label>
+            <label class="switch"><input type="checkbox" id="fThu" checked><span class="slider"></span><span style="margin-left:6px;font-size:12px;color:var(--muted);">Thu</span></label>
+            <label class="switch"><input type="checkbox" id="fFri" checked><span class="slider"></span><span style="margin-left:6px;font-size:12px;color:var(--muted);">Fri</span></label>
+            <label class="switch"><input type="checkbox" id="fSat"><span class="slider"></span><span style="margin-left:6px;font-size:12px;color:var(--muted);">Sat</span></label>
+            <label class="switch"><input type="checkbox" id="fSun"><span class="slider"></span><span style="margin-left:6px;font-size:12px;color:var(--muted);">Sun</span></label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Working Hours</label>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <input type="time" id="fStart" value="09:00" style="width:110px;">
+            <span style="color:var(--muted);">to</span>
+            <input type="time" id="fEnd" value="18:00" style="width:110px;">
+          </div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>After-Hours SMS</label>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <label class="switch">
+              <input type="checkbox" id="fSmsEnabled" checked>
+              <span class="slider"></span>
+            </label>
+            <span style="font-size:12px;color:var(--muted);">Send SMS to personal number when called outside hours</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>After-Hours Call Forward</label>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <label class="switch">
+              <input type="checkbox" id="fForwardEnabled">
+              <span class="slider"></span>
+            </label>
+            <span style="font-size:12px;color:var(--muted);">Forward to personal number (if SMS not enough)</span>
+          </div>
+        </div>
+      </div>
+      <div class="form-row single">
+        <div class="form-group">
+          <label>Notes (internal)</label>
+          <textarea id="fNotes" placeholder="Any internal notes about this client..."></textarea>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-outline" onclick="closeModal()">Cancel</button>
+        <button type="submit" class="btn btn-primary" id="submitBtn" style="display:none;">Save Client</button>
+      </div>
+    </form>
+    <div id="modalActionBar" style="display:none;margin-top:8px;">
+      <div class="modal-actions">
+        <button type="button" class="btn btn-error btn-sm" onclick="deleteClient()">Delete Client</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = window.location.origin;
+let clients = [];
+let currentTab = 'active';
+let isEditing = false;
+let editingId = null;
+let loading = false;
+
+function alert(msg, type) {
+  const div = document.createElement('div');
+  div.className = 'alert alert-' + type;
+  const icons = { error: '✕', success: '✓', warning: '⚠' };
+  div.innerHTML = `<span style="font-weight:700;">${icons[type]||'•'}</span> ${msg}`;
+  const container = document.getElementById('alertContainer');
+  container.appendChild(div);
+  setTimeout(() => div.remove(), 5000);
+}
+
+function showError(msg) { alert(msg, 'error'); }
+function showSuccess(msg) { alert(msg, 'success'); }
+
+async function adminLogin() {
+  const token = document.getElementById('adminToken').value.trim();
+  if (!token) { showError('Enter your admin token.'); return; }
+  try {
+    const resp = await fetch(API + '/api/admin/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token })
+    });
+    const data = await resp.json();
+    if (data.ok) {
+      localStorage.setItem('adminToken', token);
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('mainApp').style.display = 'block';
+      await refreshClients();
+    } else {
+      showError(data.error || 'Login failed');
+    }
+  } catch (e) {
+    showError('Network error: ' + e.message);
+  }
+}
+
+function logout() {
+  localStorage.removeItem('adminToken');
+  document.getElementById('loginScreen').style.display = 'block';
+  document.getElementById('mainApp').style.display = 'none';
+}
+
+async function refreshClients() {
+  const token = localStorage.getItem('adminToken');
+  if (!token) return;
+  try {
+    const resp = await fetch(API + '/api/admin/clients', {
+      headers: { 'X-Admin-Token': token }
+    });
+    if (resp.status === 401) { logout(); return; }
+    const data = await resp.json();
+    if (data.clients) {
+      clients = data.clients;
+      renderTable();
+    }
+  } catch (e) {
+    showError('Failed to load clients: ' + e.message);
+  }
+}
+
+function renderTable() {
+  const rows = document.getElementById('clientRows');
+  const empty = document.getElementById('emptyState');
+  const total = document.getElementById('totalCount');
+
+  let filtered = clients;
+  if (currentTab === 'active') filtered = clients.filter(c => c.subscription_active);
+  if (currentTab === 'pending') filtered = clients.filter(c => !c.twilio_number);
+
+  total.textContent = filtered.length;
+
+  if (filtered.length === 0) {
+    rows.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  rows.innerHTML = filtered.map(c => {
+    const statusClass = c.subscription_active ? 'status-active' : 'status-pending';
+    const statusText = c.subscription_active ? 'Active' : (c.twilio_number ? 'Pending setup' : 'Not subscribed');
+    const swNumber = c.twilio_number || '—';
+    const bizNum = c.business_number || '—';
+    const perNum = c.personal_number || '—';
+    const schedule = formatSchedule(c);
+    const added = new Date(c.created_at).toLocaleDateString();
+    const actions = `
+      <td class="action-cell">
+        <button class="btn btn-outline btn-sm" onclick="editClient('${c.id}')">✎ Edit</button>
+        <button class="btn btn-outline btn-sm" onclick="configureClient('${c.id}')">🔗 Configure</button>
+        <button class="btn btn-error btn-sm" onclick="deleteClientById('${c.id}')">✕</button>
+      </td>
+    `;
+    return `
+      <tr>
+        <td><strong style="font-size:14px;">${esc(c.name)}</strong></td>
+        <td>${esc(c.email)}</td>
+        <td class="number">${swNumber}</td>
+        <td class="number">${bizNum}</td>
+        <td class="number">${perNum}</td>
+        <td>${schedule}</td>
+        <td><span class="status ${statusClass}"><span class="status-dot"></span>${statusText}</span></td>
+        <td>${added}</td>
+        ${actions}
+      </tr>
+    `;
+  }).join('');
+}
+
+function formatSchedule(c) {
+  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const activeDays = days.filter((_, i) => c.working_days && c.working_days.includes(i));
+  if (!activeDays.length) return '—';
+  const start = c.working_hours_start || '00:00';
+  const end = c.working_hours_end || '00:00';
+  return `${activeDays.join(', ')} · ${start}–${end}`;
+}
+
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+  renderTable();
+}
+
+// Modal
+function openAddModal() {
+  isEditing = false;
+  editingId = null;
+  document.getElementById('modalTitle').textContent = 'Add Client';
+  document.getElementById('editId').value = '';
+  document.getElementById('clientForm').reset();
+  document.getElementById('fPrice').value = '29';
+  document.getElementById('fStart').value = '09:00';
+  document.getElementById('fEnd').value = '18:00';
+  document.getElementById('fMon').checked = true;
+  document.getElementById('fTue').checked = true;
+  document.getElementById('fWed').checked = true;
+  document.getElementById('fThu').checked = true;
+  document.getElementById('fFri').checked = true;
+  document.getElementById('fSat').checked = false;
+  document.getElementById('fSun').checked = false;
+  document.getElementById('fSmsEnabled').checked = true;
+  document.getElementById('fForwardEnabled').checked = false;
+  document.getElementById('fNotes').value = '';
+  document.getElementById('modalActionBar').style.display = 'none';
+  document.getElementById('clientModal').classList.add('open');
+}
+
+function editClient(id) {
+  const c = clients.find(x => x.id === id);
+  if (!c) return;
+  isEditing = true;
+  editingId = id;
+  document.getElementById('modalTitle').textContent = 'Edit Client';
+  document.getElementById('editId').value = id;
+  document.getElementById('fName').value = c.name;
+  document.getElementById('fEmail').value = c.email;
+  document.getElementById('fPassword').value = ''; // can't edit password via modal
+  document.getElementById('fPassword').placeholder = 'Leave blank to keep current';
+  document.getElementById('fPrice').value = c.price || 29;
+  document.getElementById('fBiz').value = c.business_number || '';
+  document.getElementById('fPer').value = c.personal_number || '';
+  document.getElementById('fTz').value = c.timezone || 'Asia/Karachi';
+  document.getElementById('fAreaCode').value = c.area_code || '';
+  document.getElementById('fStart').value = c.working_hours_start || '09:00';
+  document.getElementById('fEnd').value = c.working_hours_end || '18:00';
+  document.getElementById('fMon').checked = c.working_days && c.working_days.includes(1);
+  document.getElementById('fTue').checked = c.working_days && c.working_days.includes(2);
+  document.getElementById('fWed').checked = c.working_days && c.working_days.includes(3);
+  document.getElementById('fThu').checked = c.working_days && c.working_days.includes(4);
+  document.getElementById('fFri').checked = c.working_days && c.working_days.includes(5);
+  document.getElementById('fSat').checked = c.working_days && c.working_days.includes(6);
+  document.getElementById('fSun').checked = c.working_days && c.working_days.includes(0);
+  document.getElementById('fSmsEnabled').checked = c.after_hours_sms_enabled !== false;
+  document.getElementById('fForwardEnabled').checked = c.after_hours_forward_enabled === true;
+  document.getElementById('fNotes').value = c.notes || '';
+  document.getElementById('modalActionBar').style.display = 'block';
+  document.getElementById('clientModal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('clientModal').classList.remove('open');
+}
+
+document.getElementById('clientForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if (loading) return;
+  loading = true;
+  const btn = document.getElementById('submitBtn');
+  const origText = btn.textContent;
+  btn.textContent = 'Saving...';
+  btn.disabled = true;
+
+  const token = localStorage.getItem('adminToken');
+  const editId = document.getElementById('editId').value;
+  const password = document.getElementById('fPassword').value.trim();
+
+  const days = [];
+  if (document.getElementById('fMon').checked) days.push(1);
+  if (document.getElementById('fTue').checked) days.push(2);
+  if (document.getElementById('fWed').checked) days.push(3);
+  if (document.getElementById('fThu').checked) days.push(4);
+  if (document.getElementById('fFri').checked) days.push(5);
+  if (document.getElementById('fSat').checked) days.push(6);
+  if (document.getElementById('fSun').checked) days.push(0);
+
+  const body = {
+    name: document.getElementById('fName').value.trim(),
+    email: document.getElementById('fEmail').value.trim(),
+    password: password || undefined,
+    price: parseFloat(document.getElementById('fPrice').value) || 29,
+    business_number: document.getElementById('fBiz').value.trim() || undefined,
+    personal_number: document.getElementById('fPer').value.trim() || undefined,
+    timezone: document.getElementById('fTz').value,
+    area_code: document.getElementById('fAreaCode').value.trim() || undefined,
+    working_days: days,
+    working_hours_start: document.getElementById('fStart').value,
+    working_hours_end: document.getElementById('fEnd').value,
+    after_hours_sms_enabled: document.getElementById('fSmsEnabled').checked,
+    after_hours_forward_enabled: document.getElementById('fForwardEnabled').checked,
+    notes: document.getElementById('fNotes').value.trim() || undefined,
+  };
+
+  try {
+    const url = editingId
+      ? API + '/api/admin/clients/' + editId
+      : API + '/api/admin/clients';
+    const method = editingId ? 'PUT' : 'POST';
+    const resp = await fetch(url, {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Admin-Token': token
+      },
+      body: JSON.stringify(body)
+    });
+    const data = await resp.json();
+    if (data.ok) {
+      showSuccess(editingId ? 'Client updated.' : 'Client added. Provisioning number...');
+      closeModal();
+      await refreshClients();
+      // Auto-configure if new client has a number
+      if (!editingId && data.client && data.client.twilio_number) {
+        setTimeout(() => configureClient(data.client.id), 1000);
+      }
+    } else {
+      showError(data.error || 'Save failed');
+      // If provisioning failed, show partial info
+      if (data.detail) showError(data.detail);
+    }
+  } catch (err) {
+    showError('Error: ' + err.message);
+  } finally {
+    loading = false;
+    btn.textContent = origText;
+    btn.disabled = false;
+  }
+});
+
+async function configureClient(id) {
+  if (loading) return;
+  loading = true;
+  const btn = document.createElement('button');
+  btn.className = 'btn btn-primary btn-sm';
+  btn.textContent = 'Configuring...';
+  btn.disabled = true;
+  // Replace actions temporarily
+  const row = document.querySelector(`tr[data-id="${id}"]`);
+  const actionsCell = row ? row.querySelector('.action-cell') : null;
+  if (actionsCell) {
+    actionsCell.innerHTML = '<span style="color:var(--muted);font-size:12px;">Configuring...</span>';
+  }
+
+  try {
+    const token = localStorage.getItem('adminToken');
+    const resp = await fetch(API + '/api/admin/clients/' + id + '/configure', {
+      method: 'POST',
+      headers: { 'X-Admin-Token': token }
+    });
+    const data = await resp.json();
+    if (data.ok) {
+      showSuccess('Number configured! Voice URL set to: ' + data.voice_url);
+      await refreshClients();
+    } else {
+      showError(data.error || 'Configuration failed');
+    }
+  } catch (err) {
+    showError('Error: ' + err.message);
+  } finally {
+    loading = false;
+    await refreshClients();
+  }
+}
+
+async function deleteClientById(id) {
+  if (!confirm('Delete this client and remove their number?')) return;
+  const token = localStorage.getItem('adminToken');
+  try {
+    const resp = await fetch(API + '/api/admin/clients/' + id, {
+      method: 'DELETE',
+      headers: { 'X-Admin-Token': token }
+    });
+    const data = await resp.json();
+    if (data.ok) {
+      showSuccess('Client deleted.');
+      await refreshClients();
+    } else {
+      showError(data.error || 'Delete failed');
+    }
+  } catch (err) {
+    showError('Error: ' + err.message);
+  }
+}
+
+function deleteClient() {
+  if (!editingId) return;
+  deleteClientById(editingId);
+  closeModal();
+}
+
+async function exportCSV() {
+  const rows = clients.map(c => ({
+    Name: c.name,
+    Email: c.email,
+    SignalWireNumber: c.twilio_number || '',
+    BusinessPhone: c.business_number || '',
+    PersonalPhone: c.personal_number || '',
+    Timezone: c.timezone || '',
+    WorkingDays: (c.working_days || []).join(','),
+    HoursStart: c.working_hours_start || '',
+    HoursEnd: c.working_hours_end || '',
+    SMSEnabled: c.after_hours_sms_enabled !== false,
+    Status: c.subscription_active ? 'Active' : 'Inactive',
+    Created: c.created_at ? new Date(c.created_at).toISOString() : '',
+    Notes: c.notes || ''
+  }));
+  const header = Object.keys(rows[0] || {}).join(',');
+  const csvRows = rows.map(r => Object.values(r).map(v => '"' + String(v).replace(/"/g, '""') + '"').join(','));
+  const csv = [header, ...csvRows].join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'never-miss-a-call-clients.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// Auto-login on page load
+document.addEventListener('DOMContentLoaded', () => {
+  const saved = localStorage.getItem('adminToken');
+  if (saved) {
+    document.getElementById('adminToken').value = saved;
+    adminLogin();
+  }
+});
+</script>
+
+</body>
+</html>
