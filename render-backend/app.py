@@ -309,21 +309,28 @@ def provision_number(user: User):
     if user.twilio_number:
         return user.twilio_number
     if not sw_client:
+        app.logger.warning(f'provision_number SKIPPED for {user.email}: SignalWire not configured')
         raise RuntimeError('SignalWire not configured')
+    app.logger.info(f'provision_number START for {user.email}: looking for available number')
     area = AREA_CODE.lstrip('+').replace('-', '')
     numbers = sw_client.incoming_phone_numbers.list(
         area_code=area,
         limit=5,
     )
+    app.logger.info(f'provision_number FILTER for {user.email}: area_code={area}, found {len(numbers)}')
     if not numbers:
         numbers = sw_client.incoming_phone_numbers.list(limit=5)
+        app.logger.info(f'provision_number FALLBACK for {user.email}: found {len(numbers)} unfiltered')
     if not numbers:
+        app.logger.warning(f'provision_number NO_NUMBERS for {user.email}: no available SignalWire numbers')
         raise RuntimeError('No SignalWire numbers available')
     num = numbers[0]
-    num.update(voice_url=f'{app.config["SERVER_URL"]}/call/{user.id}')
+    voice_url = f'{app.config["SERVER_URL"]}/call/{user.id}'
+    num.update(voice_url=voice_url)
     user.twilio_number = num.phone_number
     user.twilio_number_sid = num.sid
     db.session.commit()
+    app.logger.info(f'provision_number SUCCESS for {user.email}: number={num.phone_number}')
     return num.phone_number
 
 
