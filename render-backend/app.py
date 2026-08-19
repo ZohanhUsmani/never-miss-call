@@ -520,9 +520,13 @@ def admin_create_client():
     twilio_number_sid = None
     voice_url = None
     try:
-        if sw_client:
+        if not sw_client:
+            app.logger.info(f'Auto-provision SKIPPED for {user.email}: SignalWire not configured')
+        else:
             area = (data.get('area_code') or AREA_CODE).strip()
             area = area.lstrip('+').replace('-', '')
+            app.logger.info(f'Auto-provision START for {user.email}: area_code={area}, '
+                           f'SignalWire space={SIGNALWIRE_SPACE}')
 
             # 1. Find an available number with the desired area code
             # available_phone_numbers.list() returns country groups.
@@ -554,8 +558,11 @@ def admin_create_client():
                     if len(candidates) >= 5:
                         break
 
+            app.logger.info(f'Auto-provision SEARCH for {user.email}: found {len(candidates)} candidates')
+
             if candidates:
                 phone_to_buy = candidates[0].phone_number
+                app.logger.info(f'Auto-provision BUY for {user.email}: purchasing {phone_to_buy}')
 
                 # 2. Purchase the number
                 purchased = sw_client.incoming_phone_numbers.create(phone_number=phone_to_buy)
@@ -568,10 +575,12 @@ def admin_create_client():
 
                 user.twilio_number = twilio_number
                 user.twilio_number_sid = twilio_number_sid
-                app.logger.info(f'Auto-bought number {twilio_number} for {user.email}')
+                app.logger.info(f'Auto-provision SUCCESS for {user.email}: number={twilio_number}, sid={twilio_number_sid}')
+            else:
+                app.logger.warning(f'Auto-provision NO NUMBERS for {user.email}: no available SignalWire numbers found')
 
     except Exception as e:
-        app.logger.error(f'Auto-provision failed for {user.email}: {e}')
+        app.logger.error(f'Auto-provision FAILED for {user.email}: {e}', exc_info=True)
 
     db.session.commit()
 
