@@ -305,18 +305,18 @@ def set_config():
 # ── SignalWire number provisioning ────────────────────────────────────────────
 
 def provision_number(user: User):
-    """Buy a SignalWire number for the user if they don't have one."""
+    """Assign an existing SignalWire number to the user if they don't have one."""
     if user.twilio_number:
         return user.twilio_number
     if not sw_client:
         raise RuntimeError('SignalWire not configured')
     area = AREA_CODE.lstrip('+').replace('-', '')
-    numbers = sw_client.phone_numbers.list(
+    numbers = sw_client.incoming_phone_numbers.list(
         area_code=area,
         limit=5,
     )
     if not numbers:
-        numbers = sw_client.phone_numbers.list(limit=5)
+        numbers = sw_client.incoming_phone_numbers.list(limit=5)
     if not numbers:
         raise RuntimeError('No SignalWire numbers available')
     num = numbers[0]
@@ -523,18 +523,31 @@ def admin_create_client():
         if sw_client:
             area = (data.get('area_code') or AREA_CODE).strip()
             area = area.lstrip('+').replace('-', '')
-            numbers = sw_client.phone_numbers.list(area_code=area, limit=10)
-            if not numbers:
-                numbers = sw_client.phone_numbers.list(limit=10)
-            if numbers:
-                num = numbers[0]
+
+            # 1. Find an available number with the desired area code
+            available = sw_client.available_phone_numbers.list(limit=10)
+            # Filter to numbers matching the area code
+            candidates = [n for n in available if n.area_code == area] if area else available
+            if not candidates:
+                # Fallback: list all available, pick first
+                candidates = list(available)
+
+            if candidates:
+                phone_to_buy = candidates[0].phone_number
+
+                # 2. Purchase the number
+                purchased = sw_client.incoming_phone_numbers.create(phone_number=phone_to_buy)
+                twilio_number = purchased.phone_number
+                twilio_number_sid = purchased.sid
+
+                # 3. Set the voice URL
                 voice_url = f'{app.config["SERVER_URL"]}/call/{user.id}'
-                num.update(voice_url=voice_url)
-                twilio_number = num.phone_number
-                twilio_number_sid = num.sid
+                purchased.update(voice_url=voice_url)
+
                 user.twilio_number = twilio_number
                 user.twilio_number_sid = twilio_number_sid
                 app.logger.info(f'Auto-bought number {twilio_number} for {user.email}')
+
     except Exception as e:
         app.logger.error(f'Auto-provision failed for {user.email}: {e}')
 
@@ -648,7 +661,7 @@ def admin_delete_client(client_id):
     # Release the SignalWire number (don't release, just unassign from user)
     if user.twilio_number_sid and sw_client:
         try:
-            sw_client.phone_numbers(user.twilio_number_sid).update(voice_url='')
+            sw_client.incoming_phone_numbers(user.twilio_number_sid).update(voice_url='')
             app.logger.info(f'Cleared voice URL for {user.twilio_number} ({user.id})')
         except Exception as e:
             app.logger.warning(f'Failed to clear voice URL for {user.twilio_number_sid}: {e}')
@@ -672,10 +685,10 @@ def admin_configure_client(client_id):
     voice_url = f'{app.config["SERVER_URL"]}/call/{user.id}'
     try:
         if user.twilio_number_sid:
-            sw_client.phone_numbers(user.twilio_number_sid).update(voice_url=voice_url)
+            sw_client.incoming_phone_numbers(user.twilio_number_sid).update(voice_url=voice_url)
         else:
             # Find by phone number
-            nums = sw_client.phone_numbers.list(phone_number=user.twilio_number, limit=5)
+            nums = sw_client.incoming_phone_numbers.list(phone_number=user.twilio_number, limit=5)
             if nums:
                 nums[0].update(voice_url=voice_url)
                 user.twilio_number_sid = nums[0].sid
