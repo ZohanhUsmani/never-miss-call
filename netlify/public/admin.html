@@ -433,8 +433,9 @@
       </div>
       <div class="form-row">
         <div class="form-group">
-          <label>Password (min 8 chars)</label>
-          <input type="password" id="fPassword" required minlength="8" placeholder="Client password">
+          <label>Client Login Password</label>
+          <input type="password" id="fPassword" required minlength="8" placeholder="Min 8 characters">
+          <div style="font-size:11px;color:var(--muted);">This is the password the client uses to log into their dashboard on the customer page. Give it to them after you create their account.</div>
         </div>
         <div class="form-group">
           <label>Service Price ($/month)</label>
@@ -497,15 +498,15 @@
           </div>
         </div>
         <div class="form-group">
-          <label>Working Hours</label>
+          <label>Working Hours (24-hour format)</label>
           <div style="display:flex;gap:8px;align-items:center;">
-            <input type="time" id="fStart" value="09:00" style="width:110px;">
+            <input type="time" id="fStart" value="09:00" style="width:120px;" step="60">
             <span style="color:var(--muted);">to</span>
-            <input type="time" id="fEnd" value="18:00" style="width:110px;">
+            <input type="time" id="fEnd" value="17:30" style="width:120px;" step="60">
           </div>
+          <div style="font-size:11px;color:var(--muted);">24-hour format (e.g. 09:00 to 17:30)</div>
         </div>
       </div>
-      <div class="form-row">
         <div class="form-group">
           <label>After-Hours SMS</label>
           <div style="display:flex;gap:8px;align-items:center;">
