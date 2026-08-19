@@ -525,12 +525,34 @@ def admin_create_client():
             area = area.lstrip('+').replace('-', '')
 
             # 1. Find an available number with the desired area code
-            available = sw_client.available_phone_numbers.list(limit=10)
-            # Filter to numbers matching the area code
-            candidates = [n for n in available if n.area_code == area] if area else available
+            # available_phone_numbers.list() returns country groups.
+            # Each country has .phone_numbers.list(area_code=...) for actual numbers.
+            area_code_digits = area.lstrip('+')  # e.g. "212" or "92"
+            candidates = []
+            for country in sw_client.available_phone_numbers.list(limit=10):
+                try:
+                    phones = country.phone_numbers.list(area_code=area_code_digits, limit=5)
+                    candidates.extend(phones)
+                except Exception:
+                    # Country may not support area_code filter — try unfiltered
+                    try:
+                        phones = country.phone_numbers.list(limit=5)
+                        candidates.extend(phones)
+                    except Exception:
+                        continue
+                if len(candidates) >= 5:
+                    break
+
+            # Fallback: if no area-code matches, grab whatever's available
             if not candidates:
-                # Fallback: list all available, pick first
-                candidates = list(available)
+                for country in sw_client.available_phone_numbers.list(limit=10):
+                    try:
+                        phones = country.phone_numbers.list(limit=5)
+                        candidates.extend(phones)
+                    except Exception:
+                        continue
+                    if len(candidates) >= 5:
+                        break
 
             if candidates:
                 phone_to_buy = candidates[0].phone_number
