@@ -278,13 +278,13 @@
       </div>
       <div class="form-row">
         <div class="form-group">
-          <label for="fStart">Working Hours (24-hour format)</label>
+          <label>Working Hours (24-hour format)</label>
           <div style="display:flex;gap:8px;align-items:center;">
-            <input type="time" id="fStart" value="09:00" style="width:120px;" step="60">
+            <input type="text" id="fStart" value="09:00" placeholder="09:00" style="width:100px;" pattern="[0-2][0-9]:[0-5][0-9]" inputmode="numeric">
             <span style="color:var(--muted);">to</span>
-            <input type="time" id="fEnd" value="17:30" style="width:120px;" step="60">
+            <input type="text" id="fEnd" value="17:30" placeholder="17:30" style="width:100px;" pattern="[0-2][0-9]:[0-5][0-9]" inputmode="numeric">
           </div>
-          <div style="font-size:11px;color:var(--muted);">24-hour format (e.g. 09:00 to 17:30)</div>
+          <div style="font-size:11px;color:var(--muted);">24-hour format only (e.g. 09:00 to 17:30). No AM/PM.</div>
         </div>
       </div>
       <div class="form-row">
@@ -512,6 +512,12 @@ function editClient(id) {
   document.getElementById('fAreaCode').value = c.area_code || '';
   document.getElementById('fStart').value = c.working_hours_start || '09:00';
   document.getElementById('fEnd').value = c.working_hours_end || '18:00';
+
+  // Strip any AM/PM from existing values
+  ['fStart', 'fEnd'].forEach(id => {
+    const el = document.getElementById(id);
+    el.value = el.value.replace(/\s*(am|pm|AM|PM)\s*$/i, '').trim() || '00:00';
+  });
   document.getElementById('fMon').checked = c.working_days && c.working_days.includes('1');
   document.getElementById('fTue').checked = c.working_days && c.working_days.includes('2');
   document.getElementById('fWed').checked = c.working_days && c.working_days.includes('3');
@@ -556,6 +562,21 @@ document.getElementById('clientForm').addEventListener('submit', async (e) => {
   if (document.getElementById('fFri').checked) days.push(5);
   if (document.getElementById('fSat').checked) days.push(6);
   if (document.getElementById('fSun').checked) days.push(0);
+
+  // Normalize time fields: strip any AM/PM, ensure HH:MM format
+  ['fStart', 'fEnd'].forEach(id => {
+    const el = document.getElementById(id);
+    let v = el.value.trim().toLowerCase();
+    v = v.replace(/\s*(am|pm)\s*$/, '').trim();
+    if (!/^([01]?\d|2[0-3]):[0-5]\d$/.test(v)) {
+      showToast('Please use 24-hour format (e.g. 09:00, 17:30). No AM/PM.', 'error');
+      el.focus();
+      return;
+    }
+    // Normalize to HH:MM (always 2 digits for hour)
+    const parts = v.split(':');
+    el.value = `${parts[0].padStart(2, '0')}:${parts[1]}`;
+  });
 
   const body = {
     name: document.getElementById('fName').value.trim(),
