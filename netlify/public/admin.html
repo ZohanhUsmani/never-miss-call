@@ -19,365 +19,138 @@
     --error: #ef4444;
     --warning: #f59e0b;
     --radius: 8px;
+    --shadow: 0 4px 24px rgba(0,0,0,0.3);
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
-    font-family: 'Inter', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
+    background: var(--bg); color: var(--text);
+    font-family: 'Inter', system-ui, sans-serif;
+    min-height: 100vh; padding: 20px;
   }
-  .header {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 16px 24px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-  .header h1 {
-    font-size: 18px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .header .logout {
-    color: var(--muted);
-    cursor: pointer;
-    font-size: 13px;
-    text-decoration: underline;
-  }
-  .header .logout:hover { color: var(--text); }
-  .container {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 24px;
-  }
-  .btn {
-    padding: 8px 16px;
-    border: none;
-    border-radius: var(--radius);
-    cursor: pointer;
-    font-size: 13px;
-    font-weight: 500;
-    font-family: 'Inter', sans-serif;
-    transition: all 0.15s;
-  }
-  .btn-primary {
-    background: var(--accent);
-    color: white;
-  }
-  .btn-primary:hover { background: var(--accent-hover); }
-  .btn-success {
-    background: var(--success);
-    color: white;
-  }
-  .btn-success:hover { opacity: 0.9; }
-  .btn-error {
-    background: var(--error);
-    color: white;
-  }
-  .btn-error:hover { opacity: 0.9; }
-  .btn-outline {
-    background: transparent;
-    color: var(--text);
-    border: 1px solid var(--border);
-  }
-  .btn-outline:hover { background: var(--surface2); }
-  .btn-sm {
-    padding: 5px 10px;
-    font-size: 12px;
-  }
-  .btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
+  .container { max-width: 1000px; margin: 0 auto; }
+  h1 { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+  .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+  .header h1 { color: var(--text); }
+  .logout { color: var(--muted); cursor: pointer; font-size: 13px; text-decoration: underline; }
+  .logout:hover { color: var(--text); }
   .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 20px;
-    margin-bottom: 16px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px; margin-bottom: 12px;
   }
-  .card h2 {
-    font-size: 16px;
-    font-weight: 600;
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-  }
-  .form-row.single { grid-template-columns: 1fr; }
-  .form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-  .form-group label {
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-  .form-group input, .form-group select, .form-group textarea {
-    padding: 8px 10px;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    color: var(--text);
-    font-size: 13px;
-    font-family: 'Inter', sans-serif;
-    outline: none;
-    transition: border-color 0.15s;
-  }
-  .form-group input:focus, .form-group select:focus {
-    border-color: var(--accent);
-  }
-  .form-group textarea {
-    resize: vertical;
-    min-height: 60px;
-  }
-  .form-group select {
-    cursor: pointer;
-  }
-  .form-group input:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-  .alert {
-    padding: 10px 14px;
-    border-radius: var(--radius);
-    font-size: 13px;
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .alert-error {
-    background: rgba(239, 68, 68, 0.15);
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    color: var(--error);
-  }
-  .alert-success {
-    background: rgba(34, 197, 94, 0.15);
-    border: 1px solid rgba(34, 197, 94, 0.3);
-    color: var(--success);
-  }
-  .alert-warning {
-    background: rgba(245, 158, 11, 0.15);
-    border: 1px solid rgba(245, 158, 11, 0.3);
-    color: var(--warning);
-  }
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 13px;
-  }
-  th {
-    text-align: left;
-    padding: 10px 12px;
-    border-bottom: 1px solid var(--border);
-    color: var(--muted);
-    font-weight: 500;
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-  td {
-    padding: 10px 12px;
-    border-bottom: 1px solid var(--border);
-    color: var(--text);
-    vertical-align: top;
-  }
-  td.number {
-    font-family: 'Inter', monospace;
-    font-size: 12px;
-    word-break: break-all;
-  }
-  td.status {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 12px;
-  }
-  .status-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-  }
-  .status-active .status-dot { background: var(--success); }
-  .status-pending .status-dot { background: var(--warning); }
-  .status-inactive .status-dot { background: var(--muted); }
-  .action-cell { white-space: nowrap; }
-  .spinner {
-    display: inline-block;
-    width: 14px;
-    height: 14px;
-    border: 2px solid var(--border);
-    border-top-color: var(--accent);
-    border-radius: 50%;
-    animation: spin 0.6s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .empty-state {
-    text-align: center;
-    padding: 40px 20px;
-    color: var(--muted);
-    font-size: 14px;
-  }
-  .modal-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.6);
-    z-index: 200;
-    align-items: center;
-    justify-content: center;
-  }
-  .modal-overlay.open { display: flex; }
-  .modal {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 24px;
-    width: 100%;
-    max-width: 600px;
-    max-height: 90vh;
-    overflow-y: auto;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-  }
-  .modal h2 {
-    font-size: 17px;
-    font-weight: 600;
-    margin-bottom: 16px;
-  }
-  .modal-actions {
-    display: flex;
-    gap: 8px;
-    justify-content: flex-end;
-    margin-top: 16px;
-  }
-  .switch {
-    position: relative;
-    display: inline-block;
-    width: 36px;
-    height: 20px;
-    flex-shrink: 0;
-  }
-  .switch input { opacity: 0; width: 0; height: 0; }
-  .switch .slider {
-    position: absolute;
-    cursor: pointer;
-    inset: 0;
-    background: var(--surface2);
-    border-radius: 20px;
-    transition: 0.2s;
-  }
-  .switch .slider:before {
-    content: "";
-    position: absolute;
-    height: 14px;
-    width: 14px;
-    left: 3px;
-    bottom: 3px;
-    background: var(--text);
-    border-radius: 50%;
-    transition: 0.2s;
-  }
-  .switch input:checked + .slider { background: var(--accent); }
-  .switch input:checked + .slider:before { transform: translateX(16px); }
-  .copy-btn {
-    cursor: pointer;
-    color: var(--muted);
-    font-size: 11px;
-    text-decoration: underline;
-    background: none;
-    border: none;
-    padding: 0;
-    font-family: 'Inter', sans-serif;
-  }
-  .copy-btn:hover { color: var(--text); }
-  .number-badge {
-    background: var(--surface2);
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-family: monospace;
-    font-size: 12px;
-    color: var(--accent);
-  }
-  .tabs {
-    display: flex;
-    gap: 4px;
-    margin-bottom: 16px;
-    border-bottom: 1px solid var(--border);
-  }
+  .tabs { display: flex; gap: 4px; margin-bottom: 12px; }
   .tab {
-    padding: 8px 16px;
-    background: none;
-    border: none;
-    color: var(--muted);
-    cursor: pointer;
-    font-size: 13px;
-    font-family: 'Inter', sans-serif;
-    border-bottom: 2px solid transparent;
-    margin-bottom: -1px;
+    background: transparent; border: 1px solid var(--border); color: var(--muted);
+    padding: 6px 16px; border-radius: var(--radius); cursor: pointer; font-size: 13px;
+    font-family: inherit;
   }
-  .tab.active {
-    color: var(--text);
-    border-bottom-color: var(--accent);
+  .tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; padding: 8px 10px; color: var(--muted); font-weight: 500; border-bottom: 1px solid var(--border); }
+  td { padding: 8px 10px; border-bottom: 1px solid var(--border); }
+  .action-cell { display: flex; gap: 6px; }
+  .btn {
+    background: var(--accent); color: #fff; border: none; padding: 6px 14px;
+    border-radius: var(--radius); cursor: pointer; font-size: 12px; font-family: inherit;
+    font-weight: 500;
   }
-  .tab:hover { color: var(--text); }
+  .btn:hover { background: var(--accent-hover); }
+  .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border); }
+  .btn-outline:hover { background: var(--surface2); }
+  .btn-danger { background: var(--error); }
+  .btn-danger:hover { opacity: 0.9; }
+  .btn-sm { padding: 4px 10px; font-size: 11px; }
+  .empty-state { color: var(--muted); text-align: center; padding: 40px 0; }
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+    display: flex; align-items: center; justify-content: center; z-index: 100;
+  }
+  .modal {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 24px; width: 100%; max-width: 520px;
+    box-shadow: var(--shadow); max-height: 90vh; overflow-y: auto;
+  }
+  .modal h2 { font-size: 18px; margin-bottom: 16px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .form-row.single { grid-template-columns: 1fr; }
+  .form-group { display: flex; flex-direction: column; gap: 4px; }
+  .form-group label { font-size: 12px; color: var(--muted); font-weight: 500; }
+  .form-group input, .form-group select, .form-group textarea {
+    background: var(--surface2); border: 1px solid var(--border); color: var(--text);
+    padding: 8px 10px; border-radius: 6px; font-size: 13px; font-family: inherit;
+  }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    outline: 1px solid var(--accent); border-color: var(--accent);
+  }
+  .form-group input[readonly] { opacity: 0.7; cursor: not-allowed; }
+  .switch { display: inline-flex; align-items: center; cursor: pointer; }
+  .switch input { display: none; }
+  .slider {
+    width: 36px; height: 20px; background: var(--surface2); border-radius: 10px;
+    position: relative; transition: 0.2s; border: 1px solid var(--border);
+  }
+  .slider::after {
+    content: ''; position: absolute; width: 16px; height: 16px; left: 1px; top: 1px;
+    background: #fff; border-radius: 50%; transition: 0.2s;
+  }
+  .switch input:checked + .slider { background: var(--accent); border-color: var(--accent); }
+  .switch input:checked + .slider::after { transform: translateX(16px); }
+  .modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; }
+  .modal-actions .btn { flex: 1; padding: 10px; font-size: 13px; }
+  .toast {
+    position: fixed; top: 20px; right: 20px; padding: 12px 20px; border-radius: var(--radius);
+    font-size: 13px; font-weight: 500; z-index: 200; animation: slideIn 0.3s ease;
+    max-width: 320px;
+  }
+  @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+  .toast.success { background: var(--success); color: #fff; }
+  .toast.error { background: var(--error); color: #fff; }
+  #modalActionBar { display: none; margin-top: 12px; }
+  #modalActionBar .btn { flex: 1; }
+  #editId { display: none; }
 </style>
 </head>
 <body>
 
-<div class="header">
-  <h1>⚙️ Admin Panel — Never Miss a Call</h1>
-  <span class="logout" onclick="logout()">Logout</span>
-</div>
+<div class="container">
 
-<div class="container" id="app">
+  <!-- Header -->
+  <div class="header">
+    <h1>⚙️ Admin Panel — Never Miss a Call</h1>
+    <span class="logout" onclick="logout()">Logout</span>
+  </div>
+
   <!-- Login screen -->
   <div id="loginScreen" class="card" style="max-width:400px;margin:40px auto;">
     <h2 style="margin-bottom:16px;">Admin Login</h2>
-    <div class="form-group">
-      <label>Admin Token</label>
-      <input type="password" id="adminToken" placeholder="Enter your admin token" style="padding:10px;">
+    <div class="form-group" style="margin-bottom:12px;">
+      <label for="adminToken">Admin Token</label>
+      <input type="password" id="adminToken" placeholder="Enter your admin token" style="padding:10px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;font-family:inherit;">
     </div>
     <div style="margin-top:12px;display:flex;gap:8px;">
-      <button class="btn btn-primary" onclick="adminLogin()" style="flex:1;">Login</button>
+      <button class="btn" style="flex:1;" onclick="adminLogin()">Login</button>
     </div>
-    <div id="loginError" style="margin-top:12px;color:var(--error);font-size:13px;display:none;"></div>
-    <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);">
-      Token is set via <code>ADMIN_TOKEN</code> env var on Render.
-    </div>
+    <div id="loginError" style="color:var(--error);margin-top:10px;font-size:12px;display:none;">Invalid token</div>
   </div>
 
-  <!-- Main app (hidden until login) -->
-  <div id="mainApp" style="display:none;">
+  <!-- Main dashboard (hidden until login) -->
+  <div id="dashboard" style="display:none;">
 
-    <!-- Alerts -->
-    <div id="alertContainer"></div>
-
-    <!-- Toolbar -->
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
-      <div style="display:flex;gap:8px;">
-        <button class="btn btn-primary" onclick="openAddModal()">＋ Add Client</button>
-        <button class="btn btn-outline btn-sm" onclick="refreshClients()">↻ Refresh</button>
-        <button class="btn btn-outline btn-sm" onclick="exportCSV()">⬇ Export CSV</button>
+    <!-- Summary bar -->
+    <div class="card" style="display:flex;gap:24px;flex-wrap:wrap;">
+      <div>
+        <div style="font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;">Total Clients</div>
+        <div style="font-size:28px;font-weight:700;"><strong id="totalCount">0</strong></div>
       </div>
-      <div style="font-size:12px;color:var(--muted);">
-        Total clients: <strong id="totalCount">0</strong>
+      <div>
+        <div style="font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;">With Number</div>
+        <div style="font-size:28px;font-weight:700;"><strong id="withNumberCount">0</strong></div>
+      </div>
+      <div>
+        <div style="font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;">Pending (No Number)</div>
+        <div style="font-size:28px;font-weight:700;"><strong id="pendingCount">0</strong></div>
+      </div>
+      <div style="margin-left:auto;">
+        <div style="font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;">Total clients: <strong id="totalCount">0</strong></div>
       </div>
     </div>
 
@@ -408,53 +181,58 @@
           <tbody id="clientRows"></tbody>
         </table>
       </div>
-      <div id="emptyState" class="empty-state" style="display:none;">
-        No clients yet. Click "＋ Add Client" to add your first client.
-      </div>
+      <div id="emptyState" class="empty-state" style="display:none;">No clients yet. Click "＋ Add Client" to add your first client.</div>
+    </div>
+
+    <!-- Add button -->
+    <div style="display:flex;justify-content:flex-end;margin-bottom:8px;">
+      <button class="btn" onclick="openAddModal()">＋ Add Client</button>
     </div>
   </div>
 </div>
 
 <!-- Add/Edit Modal -->
-<div class="modal-overlay" id="clientModal">
+<div class="modal-overlay" id="clientModal" style="display:none;">
   <div class="modal">
     <h2 id="modalTitle">Add Client</h2>
     <form id="clientForm" onsubmit="return false;">
       <input type="hidden" id="editId">
       <div class="form-row">
         <div class="form-group">
-          <label>Full Name</label>
-          <input type="text" id="fName" required placeholder="e.g. Ahmed Khan">
+          <label for="fName">Full Name</label>
+          <input type="text" id="fName" required placeholder="e.g. Ahmed Khan" readonly>
         </div>
         <div class="form-group">
-          <label>Email</label>
-          <input type="email" id="fEmail" required placeholder="ahmed@company.com">
+          <label for="fEmail">Email</label>
+          <input type="email" id="fEmail" required placeholder="ahmed@company.com" readonly>
         </div>
       </div>
       <div class="form-row">
         <div class="form-group">
-          <label>Client Login Password</label>
-          <input type="password" id="fPassword" required minlength="8" placeholder="Min 8 characters">
-          <div style="font-size:11px;color:var(--muted);">This is the password the client uses to log into their dashboard on the customer page. Give it to them after you create their account.</div>
-        </div>
-        <div class="form-group">
-          <label>Service Price ($/month)</label>
+          <label for="fPrice">Service Price ($/month)</label>
           <input type="number" id="fPrice" value="29" min="0" step="0.01">
         </div>
-      </div>
-      <div class="form-row">
         <div class="form-group">
-          <label>Business Phone Number</label>
-          <input type="text" id="fBiz" placeholder="+923001234567">
-        </div>
-        <div class="form-group">
-          <label>Personal Phone Number</label>
-          <input type="text" id="fPer" placeholder="+923007654321">
+          <label for="fStatus">Status</label>
+          <select id="fStatus">
+            <option value="active">Active</option>
+            <option value="paused">Paused</option>
+          </select>
         </div>
       </div>
       <div class="form-row">
         <div class="form-group">
-          <label>Timezone</label>
+          <label for="fBiz">Business Phone Number</label>
+          <input type="text" id="fBiz" placeholder="+923****4567">
+        </div>
+        <div class="form-group">
+          <label for="fPer">Personal Phone Number</label>
+          <input type="text" id="fPer" placeholder="+923****4321">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="fTz">Timezone</label>
           <select id="fTz">
             <option value="Asia/Karachi">🇵🇰 Asia/Karachi (Pakistan)</option>
             <option value="America/New_York">🇺🇸 America/New_York (US ET)</option>
@@ -479,12 +257,12 @@
           </select>
         </div>
         <div class="form-group">
-          <label>Area Code (for new number)</label>
+          <label for="fAreaCode">Area Code (for new number)</label>
           <input type="text" id="fAreaCode" placeholder="e.g. 212" style="width:100px;">
           <div style="font-size:11px;color:var(--muted);">Leave blank for any available number.</div>
         </div>
       </div>
-      <div class="form-row">
+      <div class="form-row single">
         <div class="form-group">
           <label>Working Days</label>
           <div style="display:flex;gap:6px;flex-wrap:wrap;">
@@ -497,8 +275,10 @@
             <label class="switch"><input type="checkbox" id="fSun"><span class="slider"></span><span style="margin-left:6px;font-size:12px;color:var(--muted);">Sun</span></label>
           </div>
         </div>
+      </div>
+      <div class="form-row">
         <div class="form-group">
-          <label>Working Hours (24-hour format)</label>
+          <label for="fStart">Working Hours (24-hour format)</label>
           <div style="display:flex;gap:8px;align-items:center;">
             <input type="time" id="fStart" value="09:00" style="width:120px;" step="60">
             <span style="color:var(--muted);">to</span>
@@ -507,70 +287,61 @@
           <div style="font-size:11px;color:var(--muted);">24-hour format (e.g. 09:00 to 17:30)</div>
         </div>
       </div>
+      <div class="form-row">
         <div class="form-group">
-          <label>After-Hours SMS</label>
-          <div style="display:flex;gap:8px;align-items:center;">
+          <label class="switch-label">
             <label class="switch">
               <input type="checkbox" id="fSmsEnabled" checked>
               <span class="slider"></span>
             </label>
-            <span style="font-size:12px;color:var(--muted);">Send SMS to personal number when called outside hours</span>
-          </div>
+            <span style="font-size:12px;color:var(--muted);">After-Hours SMS: Send SMS to personal number when called outside hours</span>
+          </label>
         </div>
         <div class="form-group">
-          <label>After-Hours Call Forward</label>
-          <div style="display:flex;gap:8px;align-items:center;">
+          <label class="switch-label">
             <label class="switch">
               <input type="checkbox" id="fForwardEnabled">
               <span class="slider"></span>
             </label>
-            <span style="font-size:12px;color:var(--muted);">Forward to personal number (if SMS not enough)</span>
-          </div>
+            <span style="font-size:12px;color:var(--muted);">After-Hours Call Forward: Forward to personal number (if SMS not enough)</span>
+          </label>
         </div>
       </div>
       <div class="form-row single">
         <div class="form-group">
-          <label>Notes (internal)</label>
-          <textarea id="fNotes" placeholder="Any internal notes about this client..."></textarea>
+          <label for="fNotes">Notes (internal)</label>
+          <textarea id="fNotes" placeholder="Any internal notes about this client..." rows="3"></textarea>
         </div>
       </div>
       <div class="modal-actions">
         <button type="button" class="btn btn-outline" onclick="closeModal()">Cancel</button>
-        <button type="submit" class="btn btn-primary" id="submitBtn" style="display:none;">Save Client</button>
+        <button type="submit" class="btn" id="submitBtn" style="display:none;">Save Client</button>
       </div>
     </form>
     <div id="modalActionBar" style="display:none;margin-top:8px;">
-      <div class="modal-actions">
-        <button type="button" class="btn btn-error btn-sm" onclick="deleteClient()">Delete Client</button>
-      </div>
+      <button class="btn btn-outline" onclick="closeModal()">Close</button>
+      <button class="btn btn-danger btn-sm" id="deleteBtn" style="display:none;">Delete Client</button>
     </div>
   </div>
 </div>
 
+<!-- Toast container -->
+<div id="toastContainer" style="position:fixed;top:20px;right:20px;z-index:200;display:flex;flex-direction:column;gap:8px;"></div>
+
 <script>
+// API endpoint
 const API = 'https://never-miss-call-fiic.onrender.com';
+
 let clients = [];
 let currentTab = 'active';
-let isEditing = false;
-let editingId = null;
 let loading = false;
+let editingId = null;
+let isEditing = false;
 
-function alert(msg, type) {
-  const div = document.createElement('div');
-  div.className = 'alert alert-' + type;
-  const icons = { error: '✕', success: '✓', warning: '⚠' };
-  div.innerHTML = `<span style="font-weight:700;">${icons[type]||'•'}</span> ${msg}`;
-  const container = document.getElementById('alertContainer');
-  container.appendChild(div);
-  setTimeout(() => div.remove(), 5000);
-}
-
-function showError(msg) { alert(msg, 'error'); }
-function showSuccess(msg) { alert(msg, 'success'); }
-
+// ── Admin login ──
 async function adminLogin() {
   const token = document.getElementById('adminToken').value.trim();
-  if (!token) { showError('Enter your admin token.'); return; }
+  if (!token) return;
   try {
     const resp = await fetch(API + '/api/admin/login', {
       method: 'POST',
@@ -581,118 +352,129 @@ async function adminLogin() {
     if (data.ok) {
       localStorage.setItem('adminToken', token);
       document.getElementById('loginScreen').style.display = 'none';
-      document.getElementById('mainApp').style.display = 'block';
-      await refreshClients();
+      document.getElementById('dashboard').style.display = 'block';
+      refreshClients();
     } else {
-      showError(data.error || 'Login failed');
+      document.getElementById('loginError').style.display = 'block';
     }
-  } catch (e) {
-    showError('Network error: ' + e.message);
+  } catch (err) {
+    document.getElementById('loginError').style.display = 'block';
   }
 }
+
+// Auto-login on page load
+document.addEventListener('DOMContentLoaded', () => {
+  const saved = localStorage.getItem('adminToken');
+  if (saved) {
+    document.getElementById('adminToken').value = saved;
+    document.getElementById('loginError').style.display = 'none';
+    adminLogin();
+  }
+});
 
 function logout() {
   localStorage.removeItem('adminToken');
-  document.getElementById('loginScreen').style.display = 'block';
-  document.getElementById('mainApp').style.display = 'none';
+  location.reload();
 }
 
+// ── Client CRUD ──
 async function refreshClients() {
-  const token = localStorage.getItem('adminToken');
-  if (!token) return;
+  if (loading) return;
+  loading = true;
   try {
+    const token = localStorage.getItem('adminToken');
     const resp = await fetch(API + '/api/admin/clients', {
       headers: { 'X-Admin-Token': token }
     });
-    if (resp.status === 401) { logout(); return; }
     const data = await resp.json();
-    if (data.clients) {
-      clients = data.clients;
-      renderTable();
-    }
-  } catch (e) {
-    showError('Failed to load clients: ' + e.message);
+    clients = data.clients || [];
+    renderClients();
+  } catch (err) {
+    console.error('Failed to load clients:', err);
+  } finally {
+    loading = false;
   }
 }
 
-function renderTable() {
+function renderClients() {
   const rows = document.getElementById('clientRows');
   const empty = document.getElementById('emptyState');
-  const total = document.getElementById('totalCount');
-
-  let filtered = clients;
-  if (currentTab === 'active') filtered = clients.filter(c => c.subscription_active);
-  if (currentTab === 'pending') filtered = clients.filter(c => !c.twilio_number);
-
-  total.textContent = filtered.length;
+  const filtered = clients.filter(c => {
+    if (currentTab === 'active') return c.subscription_active === true;
+    if (currentTab === 'pending') return !c.twilio_number;
+    return true;
+  });
 
   if (filtered.length === 0) {
     rows.innerHTML = '';
     empty.style.display = 'block';
+    document.getElementById('totalCount').textContent = '0';
+    document.getElementById('withNumberCount').textContent = '0';
+    document.getElementById('pendingCount').textContent = '0';
     return;
   }
   empty.style.display = 'none';
 
+  const totalWithNumber = clients.filter(c => c.twilio_number).length;
+  const totalPending = clients.filter(c => !c.twilio_number).length;
+
+  document.getElementById('totalCount').textContent = clients.length;
+  document.getElementById('withNumberCount').textContent = totalWithNumber;
+  document.getElementById('pendingCount').textContent = totalPending;
+
   rows.innerHTML = filtered.map(c => {
-    const statusClass = c.subscription_active ? 'status-active' : 'status-pending';
-    const statusText = c.subscription_active ? 'Active' : (c.twilio_number ? 'Pending setup' : 'Not subscribed');
-    const swNumber = c.twilio_number || '—';
-    const bizNum = c.business_number || '—';
-    const perNum = c.personal_number || '—';
-    const schedule = formatSchedule(c);
-    const added = new Date(c.created_at).toLocaleDateString();
-    const actions = `
+    const active = c.subscription_active;
+    const statusLabel = active ? 'Active' : 'Inactive';
+    const statusClass = active ? 'status-active' : 'status-inactive';
+    const daysStr = c.working_days ? c.working_days.split(',').map(d => ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][parseInt(d)]).join(', ') : '-';
+    const schedule = `${daysStr} · ${c.working_hours_start || '09:00'}–${c.working_hours_end || '18:00'}`;
+    const created = c.created_at ? new Date(c.created_at).toLocaleDateString() : '-';
+    return `<tr data-id="${c.id}">
+      <td>${esc(c.name)}</td>
+      <td>${esc(c.email)}</td>
+      <td>${c.twilio_number || '—'}</td>
+      <td>${esc(c.business_number || '')}</td>
+      <td>${esc(c.personal_number || '')}</td>
+      <td>${schedule}</td>
+      <td class="${statusClass}">${statusLabel}</td>
+      <td>${created}</td>
       <td class="action-cell">
-        <button class="btn btn-outline btn-sm" onclick="editClient('${c.id}')">✎ Edit</button>
-        <button class="btn btn-outline btn-sm" onclick="configureClient('${c.id}')">🔗 Configure</button>
-        <button class="btn btn-error btn-sm" onclick="deleteClientById('${c.id}')">✕</button>
+        <button class="btn btn-outline btn-sm" onclick="editClient('${c.id}')">Edit</button>
+        ${c.twilio_number ? `<button class="btn btn-outline btn-sm" onclick="configureClient('${c.id}')">Configure</button>` : ''}
+        <button class="btn btn-danger btn-sm" onclick="deleteClient('${c.id}')">Delete</button>
       </td>
-    `;
-    return `
-      <tr>
-        <td><strong style="font-size:14px;">${esc(c.name)}</strong></td>
-        <td>${esc(c.email)}</td>
-        <td class="number">${swNumber}</td>
-        <td class="number">${bizNum}</td>
-        <td class="number">${perNum}</td>
-        <td>${schedule}</td>
-        <td><span class="status ${statusClass}"><span class="status-dot"></span>${statusText}</span></td>
-        <td>${added}</td>
-        ${actions}
-      </tr>
-    `;
+    </tr>`;
   }).join('');
 }
 
-function formatSchedule(c) {
-  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  const activeDays = days.filter((_, i) => c.working_days && c.working_days.includes(i));
-  if (!activeDays.length) return '—';
-  const start = c.working_hours_start || '00:00';
-  const end = c.working_hours_end || '00:00';
-  return `${activeDays.join(', ')} · ${start}–${end}`;
-}
-
-function esc(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
+function esc(str) { return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
 function switchTab(tab) {
   currentTab = tab;
-  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
-  renderTable();
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelector(`.tab[data-tab="${tab}"]`).classList.add('active');
+  renderClients();
 }
 
-// Modal
+// ── Add client modal ──
 function openAddModal() {
   isEditing = false;
   editingId = null;
   document.getElementById('modalTitle').textContent = 'Add Client';
-  document.getElementById('editId').value = '';
   document.getElementById('clientForm').reset();
+  document.getElementById('fName').value = '';
+  document.getElementById('fEmail').value = '';
+  document.getElementById('fName').readOnly = false;
+  document.getElementById('fEmail').readOnly = false;
+  document.getElementById('fName').placeholder = 'e.g. Ahmed Khan';
+  document.getElementById('fEmail').placeholder = 'ahmed@company.com';
   document.getElementById('fPrice').value = '29';
+  document.getElementById('fBiz').value = '';
+  document.getElementById('fPer').value = '';
+  document.getElementById('fTz').value = 'Asia/Karachi';
+  document.getElementById('fAreaCode').value = '';
   document.getElementById('fStart').value = '09:00';
-  document.getElementById('fEnd').value = '18:00';
+  document.getElementById('fEnd').value = '17:30';
   document.getElementById('fMon').checked = true;
   document.getElementById('fTue').checked = true;
   document.getElementById('fWed').checked = true;
@@ -703,10 +485,13 @@ function openAddModal() {
   document.getElementById('fSmsEnabled').checked = true;
   document.getElementById('fForwardEnabled').checked = false;
   document.getElementById('fNotes').value = '';
+  document.getElementById('submitBtn').style.display = 'block';
+  document.getElementById('deleteBtn').style.display = 'none';
   document.getElementById('modalActionBar').style.display = 'none';
-  document.getElementById('clientModal').classList.add('open');
+  document.getElementById('clientModal').style.display = 'flex';
 }
 
+// ── Edit client modal ──
 function editClient(id) {
   const c = clients.find(x => x.id === id);
   if (!c) return;
@@ -716,8 +501,10 @@ function editClient(id) {
   document.getElementById('editId').value = id;
   document.getElementById('fName').value = c.name;
   document.getElementById('fEmail').value = c.email;
-  document.getElementById('fPassword').value = ''; // can't edit password via modal
-  document.getElementById('fPassword').placeholder = 'Leave blank to keep current';
+  document.getElementById('fName').readOnly = true;
+  document.getElementById('fEmail').readOnly = true;
+  document.getElementById('fName').placeholder = '';
+  document.getElementById('fEmail').placeholder = '';
   document.getElementById('fPrice').value = c.price || 29;
   document.getElementById('fBiz').value = c.business_number || '';
   document.getElementById('fPer').value = c.personal_number || '';
@@ -725,24 +512,30 @@ function editClient(id) {
   document.getElementById('fAreaCode').value = c.area_code || '';
   document.getElementById('fStart').value = c.working_hours_start || '09:00';
   document.getElementById('fEnd').value = c.working_hours_end || '18:00';
-  document.getElementById('fMon').checked = c.working_days && c.working_days.includes(1);
-  document.getElementById('fTue').checked = c.working_days && c.working_days.includes(2);
-  document.getElementById('fWed').checked = c.working_days && c.working_days.includes(3);
-  document.getElementById('fThu').checked = c.working_days && c.working_days.includes(4);
-  document.getElementById('fFri').checked = c.working_days && c.working_days.includes(5);
-  document.getElementById('fSat').checked = c.working_days && c.working_days.includes(6);
-  document.getElementById('fSun').checked = c.working_days && c.working_days.includes(0);
+  document.getElementById('fMon').checked = c.working_days && c.working_days.includes('1');
+  document.getElementById('fTue').checked = c.working_days && c.working_days.includes('2');
+  document.getElementById('fWed').checked = c.working_days && c.working_days.includes('3');
+  document.getElementById('fThu').checked = c.working_days && c.working_days.includes('4');
+  document.getElementById('fFri').checked = c.working_days && c.working_days.includes('5');
+  document.getElementById('fSat').checked = c.working_days && c.working_days.includes('6');
+  document.getElementById('fSun').checked = c.working_days && c.working_days.includes('0');
   document.getElementById('fSmsEnabled').checked = c.after_hours_sms_enabled !== false;
   document.getElementById('fForwardEnabled').checked = c.after_hours_forward_enabled === true;
   document.getElementById('fNotes').value = c.notes || '';
+  document.getElementById('submitBtn').style.display = 'block';
+  document.getElementById('deleteBtn').style.display = 'block';
   document.getElementById('modalActionBar').style.display = 'block';
-  document.getElementById('clientModal').classList.add('open');
+  document.getElementById('clientModal').style.display = 'flex';
 }
 
 function closeModal() {
-  document.getElementById('clientModal').classList.remove('open');
+  document.getElementById('clientModal').style.display = 'none';
+  document.getElementById('submitBtn').style.display = 'none';
+  document.getElementById('deleteBtn').style.display = 'none';
+  document.getElementById('modalActionBar').style.display = 'none';
 }
 
+// ── Submit form ──
 document.getElementById('clientForm').addEventListener('submit', async (e) => {
   e.preventDefault();
   if (loading) return;
@@ -754,7 +547,6 @@ document.getElementById('clientForm').addEventListener('submit', async (e) => {
 
   const token = localStorage.getItem('adminToken');
   const editId = document.getElementById('editId').value;
-  const password = document.getElementById('fPassword').value.trim();
 
   const days = [];
   if (document.getElementById('fMon').checked) days.push(1);
@@ -768,7 +560,6 @@ document.getElementById('clientForm').addEventListener('submit', async (e) => {
   const body = {
     name: document.getElementById('fName').value.trim(),
     email: document.getElementById('fEmail').value.trim(),
-    password: password || undefined,
     price: parseFloat(document.getElementById('fPrice').value) || 29,
     business_number: document.getElementById('fBiz').value.trim() || undefined,
     personal_number: document.getElementById('fPer').value.trim() || undefined,
@@ -783,10 +574,10 @@ document.getElementById('clientForm').addEventListener('submit', async (e) => {
   };
 
   try {
-    const url = editingId
+    const url = editId
       ? API + '/api/admin/clients/' + editId
       : API + '/api/admin/clients';
-    const method = editingId ? 'PUT' : 'POST';
+    const method = editId ? 'PUT' : 'POST';
     const resp = await fetch(url, {
       method,
       headers: {
@@ -797,20 +588,14 @@ document.getElementById('clientForm').addEventListener('submit', async (e) => {
     });
     const data = await resp.json();
     if (data.ok) {
-      showSuccess(editingId ? 'Client updated.' : 'Client added. Provisioning number...');
+      showToast(isEditing ? 'Client updated.' : 'Client added. Provisioning number...', 'success');
       closeModal();
       await refreshClients();
-      // Auto-configure if new client has a number
-      if (!editingId && data.client && data.client.twilio_number) {
-        setTimeout(() => configureClient(data.client.id), 1000);
-      }
     } else {
-      showError(data.error || 'Save failed');
-      // If provisioning failed, show partial info
-      if (data.detail) showError(data.detail);
+      showToast(data.error || 'Save failed', 'error');
     }
   } catch (err) {
-    showError('Error: ' + err.message);
+    showToast('Error: ' + err.message, 'error');
   } finally {
     loading = false;
     btn.textContent = origText;
@@ -818,20 +603,36 @@ document.getElementById('clientForm').addEventListener('submit', async (e) => {
   }
 });
 
+// ── Delete ──
+async function deleteClient(id) {
+  if (!confirm('Delete this client? This cannot be undone.')) return;
+  if (loading) return;
+  loading = true;
+  try {
+    const token = localStorage.getItem('adminToken');
+    const resp = await fetch(API + '/api/admin/clients/' + id, {
+      method: 'DELETE',
+      headers: { 'X-Admin-Token': token }
+    });
+    const data = await resp.json();
+    if (data.ok) {
+      showToast('Client deleted.', 'success');
+      closeModal();
+      await refreshClients();
+    } else {
+      showToast(data.error || 'Delete failed', 'error');
+    }
+  } catch (err) {
+    showToast('Error: ' + err.message, 'error');
+  } finally {
+    loading = false;
+  }
+}
+
+// ── Configure ──
 async function configureClient(id) {
   if (loading) return;
   loading = true;
-  const btn = document.createElement('button');
-  btn.className = 'btn btn-primary btn-sm';
-  btn.textContent = 'Configuring...';
-  btn.disabled = true;
-  // Replace actions temporarily
-  const row = document.querySelector(`tr[data-id="${id}"]`);
-  const actionsCell = row ? row.querySelector('.action-cell') : null;
-  if (actionsCell) {
-    actionsCell.innerHTML = '<span style="color:var(--muted);font-size:12px;">Configuring...</span>';
-  }
-
   try {
     const token = localStorage.getItem('adminToken');
     const resp = await fetch(API + '/api/admin/clients/' + id + '/configure', {
@@ -840,80 +641,31 @@ async function configureClient(id) {
     });
     const data = await resp.json();
     if (data.ok) {
-      showSuccess('Number configured! Voice URL set to: ' + data.voice_url);
+      showToast('Number configured! Voice URL set to: ' + data.voice_url, 'success');
       await refreshClients();
     } else {
-      showError(data.error || 'Configuration failed');
+      showToast(data.error || 'Configuration failed', 'error');
     }
   } catch (err) {
-    showError('Error: ' + err.message);
+    showToast('Error: ' + err.message, 'error');
   } finally {
     loading = false;
-    await refreshClients();
   }
 }
 
-async function deleteClientById(id) {
-  if (!confirm('Delete this client and remove their number?')) return;
-  const token = localStorage.getItem('adminToken');
-  try {
-    const resp = await fetch(API + '/api/admin/clients/' + id, {
-      method: 'DELETE',
-      headers: { 'X-Admin-Token': token }
-    });
-    const data = await resp.json();
-    if (data.ok) {
-      showSuccess('Client deleted.');
-      await refreshClients();
-    } else {
-      showError(data.error || 'Delete failed');
-    }
-  } catch (err) {
-    showError('Error: ' + err.message);
-  }
+// ── Toast ──
+function showToast(message, type) {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = 'toast ' + type;
+  toast.textContent = message;
+  container.appendChild(toast);
+  setTimeout(() => { toast.style.opacity = '0'; toast.style.transition = 'opacity 0.3s'; setTimeout(() => toast.remove(), 300); }, 3000);
 }
 
-function deleteClient() {
-  if (!editingId) return;
-  deleteClientById(editingId);
-  closeModal();
-}
-
-async function exportCSV() {
-  const rows = clients.map(c => ({
-    Name: c.name,
-    Email: c.email,
-    SignalWireNumber: c.twilio_number || '',
-    BusinessPhone: c.business_number || '',
-    PersonalPhone: c.personal_number || '',
-    Timezone: c.timezone || '',
-    WorkingDays: (c.working_days || []).join(','),
-    HoursStart: c.working_hours_start || '',
-    HoursEnd: c.working_hours_end || '',
-    SMSEnabled: c.after_hours_sms_enabled !== false,
-    Status: c.subscription_active ? 'Active' : 'Inactive',
-    Created: c.created_at ? new Date(c.created_at).toISOString() : '',
-    Notes: c.notes || ''
-  }));
-  const header = Object.keys(rows[0] || {}).join(',');
-  const csvRows = rows.map(r => Object.values(r).map(v => '"' + String(v).replace(/"/g, '""') + '"').join(','));
-  const csv = [header, ...csvRows].join('\n');
-  const blob = new Blob([csv], { type: 'text/csv' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'never-miss-a-call-clients.csv';
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
-// Auto-login on page load
-document.addEventListener('DOMContentLoaded', () => {
-  const saved = localStorage.getItem('adminToken');
-  if (saved) {
-    document.getElementById('adminToken').value = saved;
-    adminLogin();
-  }
+// ── Delete button handler ──
+document.getElementById('deleteBtn').addEventListener('click', () => {
+  if (editingId) deleteClient(editingId);
 });
 </script>
 

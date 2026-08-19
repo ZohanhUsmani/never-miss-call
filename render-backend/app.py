@@ -2,6 +2,7 @@ import os
 import re
 import uuid
 import pytz
+import secrets
 from datetime import datetime
 from functools import wraps
 from flask import Flask, request, session, jsonify, g, redirect
@@ -469,9 +470,10 @@ def admin_create_client():
     data = request.get_json(silent=True) or {}
     name = (data.get('name') or '').strip()
     email = (data.get('email') or '').strip().lower()
-    password = (data.get('password') or '').strip()
     if not name or not email:
         return jsonify({'error': 'name_and_email_required'}), 400
+    # Auto-generate a password — clients never log in, but keep one for the DB
+    password = secrets.token_urlsafe(16)
     if User.query.filter_by(email=email).first():
         return jsonify({'error': 'email_already_registered'}), 409
 
