@@ -565,7 +565,7 @@ def admin_create_client():
                     if len(candidates) >= 5:
                         break
 
-            app.logger.info(f'Auto-provision SEARCH for {user.email}: found {len(candidates)} candidates')
+            app.logger.info(f'Auto-provision SEARCH for {user.email}: found {len(candidates)} candidates to buy')
 
             if candidates:
                 phone_to_buy = candidates[0].phone_number
@@ -584,7 +584,31 @@ def admin_create_client():
                 user.twilio_number_sid = twilio_number_sid
                 app.logger.info(f'Auto-provision SUCCESS for {user.email}: number={twilio_number}, sid={twilio_number_sid}')
             else:
-                app.logger.warning(f'Auto-provision NO NUMBERS for {user.email}: no available SignalWire numbers found')
+                # No available numbers to buy — check if we already own any numbers
+                app.logger.info(f'Auto-provision BUY SKIP for {user.email}: no available numbers — checking owned numbers')
+                owned = sw_client.incoming_phone_numbers.list(limit=10)
+                app.logger.info(f'Auto-provision OWNED for {user.email}: found {len(owned)} owned numbers')
+                if owned:
+                    # Pick the first owned number that isn't already assigned to another user
+                    assigned_sids = set()
+                    for u in User.query.all():
+                        if u.twilio_number_sid:
+                            assigned_sids.add(u.twilio_number_sid)
+                    unassigned = [n for n in owned if n.sid not in assigned_sids]
+                    if unassigned:
+                        num = unassigned[0]
+                        twilio_number = num.phone_number
+                        twilio_number_sid = num.sid
+                        voice_url = f'{app.config["SERVER_URL"]}/call/{user.id}'
+                        num.update(voice_url=voice_url)
+                        user.twilio_number = twilio_number
+                        user.twilio_number_sid = twilio_number_sid
+                        app.logger.info(f'Auto-provision REUSE for {user.email}: assigned owned number {twilio_number}')
+                    else:
+                        app.logger.warning(f'Auto-provision ALL_ASSIGNED for {user.email}: all owned numbers already in use')
+                        app.logger.warning(f'Auto-provision NO NUMBERS for {user.email}: no available SignalWire numbers found')
+                else:
+                    app.logger.warning(f'Auto-provision NO_NUMBERS for {user.email}: no available SignalWire numbers found')
 
     except Exception as e:
         app.logger.error(f'Auto-provision FAILED for {user.email}: {e}', exc_info=True)
