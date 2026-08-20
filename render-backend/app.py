@@ -24,11 +24,11 @@ def add_cors(response):
     origin = request.headers.get('Origin', '')
     if origin and origin != 'null':
         response.headers['Access-Control-Allow-Origin'] = origin
-    else:
-        response.headers['Access-Control-Allow-Origin'] = '*'
         response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
         response.headers['Access-Control-Allow-Headers'] = 'Content-Type, X-Admin-Token, Authorization'
         response.headers['Access-Control-Allow-Credentials'] = 'true'
+    else:
+        response.headers['Access-Control-Allow-Origin'] = '*'
     return response
 
 db = SQLAlchemy(app)
