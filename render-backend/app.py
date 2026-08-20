@@ -13,6 +13,8 @@ from twilio.twiml.voice_response import VoiceResponse, Say, Hangup
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-change-in-prod')
+
+# Handle Render PostgreSQL URL format
 db_url = os.environ.get('DATABASE_URL', 'sqlite:///app.db')
 if db_url and db_url.startswith('postgres://'):
     db_url = db_url.replace('postgres://', 'postgresql://', 1)
@@ -43,7 +45,6 @@ sw_client = SignalWireClient(SIGNALWIRE_PROJECT_ID, SIGNALWIRE_API_TOKEN, signal
 
 COUNTRY = 'US'  # USA-only for now
 AREA_CODE = os.environ.get('SIGNALWIRE_AREA_CODE', '+1')  # USA default area code
-# Price to charge per month (for display only — fake Stripe)
 MONTHLY_PRICE = 29
 
 
@@ -126,7 +127,6 @@ def format_time(tz_name: str) -> str:
 
 
 def validate_e164(phone: str) -> bool:
-    """Accept +1-555-XXX-XXXX or +1555XXXXXXX or 1555XXXXXXX"""
     cleaned = re.sub(r'[^\d+]', '', phone)
     return bool(re.match(r'^\+?\d{10,15}$', cleaned))
 
@@ -207,24 +207,20 @@ def me():
     })
 
 
-# ── Subscription (fake Stripe) ────────────────────────────────────────────────
+# ── Subscription ──────────────────────────────────────────────────────────────
 
 @app.route('/api/subscribe', methods=['POST'])
 @login_required
 def subscribe():
-    """Fake Stripe: takes the payment token, marks subscription active, auto-starts the clock."""
     data = request.get_json(silent=True) or {}
     token = (data.get('payment_method_id') or data.get('token') or '').strip()
     if not token:
         return jsonify({'error': 'payment_token_required'}), 400
-    # Fake Stripe: any non-empty token is a "success"
     user = User.query.get(session['user_id'])
-    already_active = user.subscription_active
     user.subscription_active = True
     if not user.subscription_start:
         user.subscription_start = datetime.utcnow()
     db.session.commit()
-    # Auto-provision SignalWire number if not already done
     try:
         provision_number(user)
     except Exception as e:
@@ -247,7 +243,7 @@ def unsubscribe():
     return jsonify({'ok': True, 'subscription_active': False})
 
 
-# ── Onboarding / Client Config ────────────────────────────────────────────────
+# ── Client Config ─────────────────────────────────────────────────────────────
 
 @app.route('/api/config', methods=['GET'])
 @login_required
@@ -305,10 +301,9 @@ def set_config():
     return jsonify({'ok': True, 'configured': True})
 
 
-# ── SignalWire number provisioning ────────────────────────────────────────────
+# ── SignalWire Provisioning ───────────────────────────────────────────────────
 
 def provision_number(user: User):
-    """Assign an existing SignalWire number to the user if they don't have one."""
     if user.twilio_number:
         return user.twilio_number
     if not sw_client:
@@ -320,12 +315,9 @@ def provision_number(user: User):
         area_code=area,
         limit=5,
     )
-    app.logger.info(f'provision_number FILTER for {user.email}: area_code={area}, found {len(numbers)}')
     if not numbers:
         numbers = sw_client.incoming_phone_numbers.list(limit=5)
-        app.logger.info(f'provision_number FALLBACK for {user.email}: found {len(numbers)} unfiltered')
     if not numbers:
-        app.logger.warning(f'provision_number NO_NUMBERS for {user.email}: no available SignalWire numbers')
         raise RuntimeError('No SignalWire numbers available')
     num = numbers[0]
     voice_url = f'{app.config["SERVER_URL"]}/call/{user.id}'
@@ -333,7 +325,6 @@ def provision_number(user: User):
     user.twilio_number = num.phone_number
     user.twilio_number_sid = num.sid
     db.session.commit()
-    app.logger.info(f'provision_number SUCCESS for {user.email}: number={num.phone_number}')
     return num.phone_number
 
 
@@ -346,14 +337,14 @@ def request_provision():
         return jsonify({
             'ok': True,
             'twilio_number': number,
-            'message': f'Your Never Miss a Call number is {number}. Use this number everywhere instead of your old business number.',
+            'message': f'Your Never Miss a Call number is {number}.',
         })
     except Exception as e:
         app.logger.error(f'Provisioning failed for {user.email}: {e}')
         return jsonify({'error': 'number_provisioning_failed', 'detail': str(e)}), 500
 
 
-# ── Call webhook (SignalWire → our server) ────────────────────────────────────
+# ── Call Webhook ──────────────────────────────────────────────────────────────
 
 @app.route('/call/<user_id>', methods=['POST'])
 def handle_inbound_call(user_id: str):
@@ -368,14 +359,11 @@ def handle_inbound_call(user_id: str):
     from_number = request.form.get('From', '').strip()
 
     if cfg and is_working_hours(cfg):
-        # Working hours: forward to business number
         response = VoiceResponse()
         response.say('Connecting you now.')
-        # SignalWire forwards directly to the business number
         response.number(cfg.business_number)
         return str(response), 200, {'Content-Type': 'text/xml'}
 
-    # After hours: SMS personal number (if enabled), do NOT ring business
     if cfg and cfg.after_hours_sms_enabled and cfg.personal_number and sw_client:
         time_str = format_time(cfg.timezone)
         caller_display = from_number if from_number else 'Unknown caller'
@@ -400,7 +388,7 @@ def handle_inbound_call(user_id: str):
     return str(response), 200, {'Content-Type': 'text/xml'}
 
 
-# ── Dashboard data ────────────────────────────────────────────────────────────
+# ── Dashboard Data ────────────────────────────────────────────────────────────
 
 @app.route('/api/dashboard', methods=['GET'])
 @login_required
@@ -420,7 +408,7 @@ def dashboard():
     })
 
 
-# ── Admin endpoints ────────────────────────────────────────────────────────────
+# ── Admin Endpoints ───────────────────────────────────────────────────────────
 
 ADMIN_TOKEN = os.environ.get('ADMIN_TOKEN', '').strip()
 
@@ -482,7 +470,6 @@ def admin_create_client():
     email = (data.get('email') or '').strip().lower()
     if not name or not email:
         return jsonify({'error': 'name_and_email_required'}), 400
-    # Auto-generate a password — clients never log in, but keep one for the DB
     password = secrets.token_urlsafe(16)
     if User.query.filter_by(email=email).first():
         return jsonify({'error': 'email_already_registered'}), 409
@@ -490,14 +477,13 @@ def admin_create_client():
     user = User(
         name=name,
         email=email,
-        password_hash=generate_password_hash(password) if password else generate_password_hash('changeme123'),
+        password_hash=generate_password_hash(password),
         subscription_active=True,
         subscription_start=datetime.utcnow(),
     )
     db.session.add(user)
     db.session.commit()
 
-    # Set config
     business_number = (data.get('business_number') or '').strip()
     personal_number = (data.get('personal_number') or '').strip()
     timezone = (data.get('timezone') or 'UTC').strip()
@@ -510,7 +496,6 @@ def admin_create_client():
     working_hours_end = (data.get('working_hours_end') or '18:00').strip()
     after_hours_sms_enabled = data.get('after_hours_sms_enabled', True)
     after_hours_forward_enabled = data.get('after_hours_forward_enabled', False)
-    notes = (data.get('notes') or '').strip() or None
 
     cfg = ClientConfig(
         user_id=user.id,
@@ -525,30 +510,18 @@ def admin_create_client():
     )
     db.session.add(cfg)
 
-    # Auto-buy number if SignalWire is configured
     twilio_number = None
     twilio_number_sid = None
     voice_url = None
     try:
-        if not sw_client:
-            app.logger.info(f'Auto-provision SKIPPED for {user.email}: SignalWire not configured')
-        else:
-            area = (data.get('area_code') or AREA_CODE).strip()
-            area = area.lstrip('+').replace('-', '')
-            app.logger.info(f'Auto-provision START for {user.email}: area_code={area}, '
-                           f'SignalWire space={SIGNALWIRE_SPACE}')
-
-            # 1. Find an available number with the desired area code
-            # available_phone_numbers.list() returns country groups.
-            # Each country has .phone_numbers.list(area_code=...) for actual numbers.
-            area_code_digits = area.lstrip('+')  # e.g. "212" or "92"
+        if sw_client:
+            area = (data.get('area_code') or AREA_CODE).strip().lstrip('+').replace('-', '')
             candidates = []
             for country in sw_client.available_phone_numbers.list(limit=10):
                 try:
-                    phones = country.phone_numbers.list(area_code=area_code_digits, limit=5)
+                    phones = country.phone_numbers.list(area_code=area, limit=5)
                     candidates.extend(phones)
                 except Exception:
-                    # Country may not support area_code filter — try unfiltered
                     try:
                         phones = country.phone_numbers.list(limit=5)
                         candidates.extend(phones)
@@ -557,46 +530,21 @@ def admin_create_client():
                 if len(candidates) >= 5:
                     break
 
-            # Fallback: if no area-code matches, grab whatever's available
-            if not candidates:
-                for country in sw_client.available_phone_numbers.list(limit=10):
-                    try:
-                        phones = country.phone_numbers.list(limit=5)
-                        candidates.extend(phones)
-                    except Exception:
-                        continue
-                    if len(candidates) >= 5:
-                        break
-
-            app.logger.info(f'Auto-provision SEARCH for {user.email}: found {len(candidates)} candidates to buy')
-
             if candidates:
                 phone_to_buy = candidates[0].phone_number
-                app.logger.info(f'Auto-provision BUY for {user.email}: purchasing {phone_to_buy}')
-
-                # 2. Purchase the number
                 purchased = sw_client.incoming_phone_numbers.create(phone_number=phone_to_buy)
                 twilio_number = purchased.phone_number
                 twilio_number_sid = purchased.sid
 
-                # 3. Set the voice URL
                 voice_url = f'{app.config["SERVER_URL"]}/call/{user.id}'
                 purchased.update(voice_url=voice_url)
 
                 user.twilio_number = twilio_number
                 user.twilio_number_sid = twilio_number_sid
-                app.logger.info(f'Auto-provision SUCCESS for {user.email}: number={twilio_number}, sid={twilio_number_sid}')
             else:
-                # No available numbers to buy — check if we already own any numbers
-                app.logger.info(f'Auto-provision BUY SKIP for {user.email}: no available numbers — checking owned numbers')
                 owned = sw_client.incoming_phone_numbers.list(limit=10)
-                app.logger.info(f'Auto-provision OWNED for {user.email}: found {len(owned)} owned numbers')
                 if owned:
-                    # Pick the first owned number that isn't already assigned to another user
-                    assigned_sids = set()
-                    for u in User.query.all():
-                        if u.twilio_number_sid:
-                            assigned_sids.add(u.twilio_number_sid)
+                    assigned_sids = {u.twilio_number_sid for u in User.query.all() if u.twilio_number_sid}
                     unassigned = [n for n in owned if n.sid not in assigned_sids]
                     if unassigned:
                         num = unassigned[0]
@@ -606,12 +554,6 @@ def admin_create_client():
                         num.update(voice_url=voice_url)
                         user.twilio_number = twilio_number
                         user.twilio_number_sid = twilio_number_sid
-                        app.logger.info(f'Auto-provision REUSE for {user.email}: assigned owned number {twilio_number}')
-                    else:
-                        app.logger.warning(f'Auto-provision ALL_ASSIGNED for {user.email}: all owned numbers already in use')
-                        app.logger.warning(f'Auto-provision NO NUMBERS for {user.email}: no available SignalWire numbers found')
-                else:
-                    app.logger.warning(f'Auto-provision NO_NUMBERS for {user.email}: no available SignalWire numbers found')
 
     except Exception as e:
         app.logger.error(f'Auto-provision FAILED for {user.email}: {e}', exc_info=True)
@@ -634,7 +576,6 @@ def admin_create_client():
         'after_hours_sms_enabled': after_hours_sms_enabled,
         'after_hours_forward_enabled': after_hours_forward_enabled,
         'voice_url': voice_url,
-        'area_code': data.get('area_code', '') or None,
     }
     return jsonify({'ok': True, 'client': result}), 201
 
@@ -647,7 +588,6 @@ def admin_update_client(client_id):
         return jsonify({'error': 'client_not_found'}), 404
     data = request.get_json(silent=True) or {}
 
-    # Update basic fields
     if data.get('name'):
         user.name = data['name']
     if data.get('email'):
@@ -659,15 +599,12 @@ def admin_update_client(client_id):
         user.password_hash = generate_password_hash(data['password'])
     if 'subscription_active' in data:
         user.subscription_active = bool(data['subscription_active'])
-    if 'price' in data:
-        if hasattr(user, 'price'):
-            user.price = data['price']
-    if 'notes' in data:
+    if 'price' in data and hasattr(user, 'price'):
+        user.price = data['price']
+    if 'notes' in data and hasattr(user, 'notes'):
         notes = (data['notes'] or '').strip()
-        if hasattr(user, 'notes'):
-            user.notes = notes if notes else None
+        user.notes = notes if notes else None
 
-    # Update config
     cfg = ClientConfig.query.filter_by(user_id=user.id).first()
     if not cfg:
         cfg = ClientConfig(user_id=user.id)
@@ -723,14 +660,11 @@ def admin_delete_client(client_id):
     user = User.query.get(client_id)
     if not user:
         return jsonify({'error': 'client_not_found'}), 404
-    # Release the SignalWire number (don't release, just unassign from user)
     if user.twilio_number_sid and sw_client:
         try:
-            sw_client.incoming_phone_numbers(user.twilio_number_sid).update(voice_url='')
-            app.logger.info(f'Cleared voice URL for {user.twilio_number} ({user.id})')
+            sw_client.incoming_phone_numbers.get(user.twilio_number_sid).update(voice_url='')
         except Exception as e:
             app.logger.warning(f'Failed to clear voice URL for {user.twilio_number_sid}: {e}')
-    # Delete user + config
     ClientConfig.query.filter_by(user_id=user.id).delete()
     db.session.delete(user)
     db.session.commit()
@@ -747,31 +681,28 @@ def admin_configure_client(client_id):
         return jsonify({'error': 'no_number_assigned'}), 400
     if not sw_client:
         return jsonify({'error': 'signalwire_not_configured'}), 503
+
     voice_url = f'{app.config["SERVER_URL"]}/call/{user.id}'
     try:
         if user.twilio_number_sid:
-            sw_client.incoming_phone_numbers(user.twilio_number_sid).update(voice_url=voice_url)
+            sw_client.incoming_phone_numbers.get(user.twilio_number_sid).update(voice_url=voice_url)
         else:
-            # Find by phone number
             nums = sw_client.incoming_phone_numbers.list(phone_number=user.twilio_number, limit=5)
             if nums:
                 nums[0].update(voice_url=voice_url)
                 user.twilio_number_sid = nums[0].sid
                 db.session.commit()
-        app.logger.info(f'Configured voice URL for {user.id} ({user.twilio_number})')
+
         return jsonify({'ok': True, 'voice_url': voice_url})
     except Exception as e:
-        app.logger.error(f'Configure failed for {user.id}: {e}')
+        app.logger.error(f'Failed to configure SignalWire number for {user.id}: {e}')
         return jsonify({'error': 'configuration_failed', 'detail': str(e)}), 500
 
 
-# ── Init DB ────────────────────────────────────────────────────────────────────
-
-with app.app_context():
-    db.create_all()
-
-# ── Run ────────────────────────────────────────────────────────────────────────
+# ── App Execution ─────────────────────────────────────────────────────────────
 
 if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
     port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port, debug=False)
+    app.run(host='0.0.0.0', port=port)
